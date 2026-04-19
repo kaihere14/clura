@@ -1,0 +1,42 @@
+{
+  "name": "clura",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev:client": "bun run --cwd client dev",
+    "dev:server": "bun run --cwd server dev",
+    "build": "bun run --cwd client build && bun run --cwd server build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9",
+    "@types/bun": "latest",
+    "eslint": "^9",
+    "eslint-plugin-react-hooks": "^5",
+    "eslint-plugin-react-refresh": "^0.4",
+    "globals": "^16",
+    "husky": "^9",
+    "lint-staged": "^15",
+    "prettier": "^3",
+    "prettier-plugin-tailwindcss": "^0.6",
+    "typescript": "^5",
+    "typescript-eslint": "^8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,html}": [
+      "prettier --write"
+    ]
+  }
+}
