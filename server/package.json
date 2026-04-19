@@ -1,15 +1,21 @@
 {
   "name": "server",
-  "module": "server.ts",
+  "module": "index.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/server.ts",
+    "dev": "bun --watch src/index.ts",
     "build": "tsc",
-    "start": "bun run build && bun dist/server.js"
+    "start": "bun run build && bun dist/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/pg": "^8.20.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -19,6 +25,9 @@
     "@types/express": "^5.0.6",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0"
   }
 }
