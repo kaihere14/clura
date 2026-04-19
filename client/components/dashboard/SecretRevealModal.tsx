@@ -11,16 +11,30 @@ interface SecretRevealModalProps {
 export default function SecretRevealModal({ app, onDismiss }: SecretRevealModalProps) {
   const [copiedId, setCopiedId] = useState(false);
   const [copiedSecret, setCopiedSecret] = useState(false);
+  const [copiedRedirectUri, setCopiedRedirectUri] = useState(false);
+  const [copiedDiscoveryUrl, setCopiedDiscoveryUrl] = useState(false);
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  const discoveryUrl = `${base}/.well-known/openid-configuration`;
 
-  const copy = async (text: string, which: "id" | "secret") => {
+  const copy = async (text: string, which: "id" | "secret" | "redirect" | "discovery") => {
     await navigator.clipboard.writeText(text);
     if (which === "id") {
       setCopiedId(true);
       setTimeout(() => setCopiedId(false), 2000);
-    } else {
+      return;
+    }
+    if (which === "secret") {
       setCopiedSecret(true);
       setTimeout(() => setCopiedSecret(false), 2000);
+      return;
     }
+    if (which === "redirect") {
+      setCopiedRedirectUri(true);
+      setTimeout(() => setCopiedRedirectUri(false), 2000);
+      return;
+    }
+    setCopiedDiscoveryUrl(true);
+    setTimeout(() => setCopiedDiscoveryUrl(false), 2000);
   };
 
   return (
@@ -78,6 +92,40 @@ export default function SecretRevealModal({ app, onDismiss }: SecretRevealModalP
                 className="rounded-lg bg-neutral-100 px-2 py-1.5 text-xs transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
               >
                 {copiedSecret ? "Copied!" : "Copy"}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+              Redirect URI
+            </label>
+            <div className="mt-1 flex items-center gap-2">
+              <code className="flex-1 truncate rounded-lg bg-neutral-100 px-3 py-2 font-mono text-xs dark:bg-neutral-800">
+                {app.redirectUri}
+              </code>
+              <button
+                onClick={() => copy(app.redirectUri, "redirect")}
+                className="rounded-lg bg-neutral-100 px-2 py-1.5 text-xs transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+              >
+                {copiedRedirectUri ? "Copied!" : "Copy"}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+              OIDC Discovery URL
+            </label>
+            <div className="mt-1 flex items-center gap-2">
+              <code className="flex-1 truncate rounded-lg bg-neutral-100 px-3 py-2 font-mono text-xs dark:bg-neutral-800">
+                {discoveryUrl}
+              </code>
+              <button
+                onClick={() => copy(discoveryUrl, "discovery")}
+                className="rounded-lg bg-neutral-100 px-2 py-1.5 text-xs transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+              >
+                {copiedDiscoveryUrl ? "Copied!" : "Copy"}
               </button>
             </div>
           </div>
