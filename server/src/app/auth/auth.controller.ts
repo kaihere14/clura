@@ -13,7 +13,7 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, JWT_SECRET 
 // In-memory state store (use Redis in production)
 const pendingStates = new Set<string>();
 
-export const googleRedirect = (_req: Request, res: Response) => {
+export const openIdRedirect = (_req: Request, res: Response) => {
   const state = crypto.randomBytes(16).toString("hex");
   pendingStates.add(state);
   // Clean up state after 10 minutes
@@ -32,22 +32,24 @@ export const googleRedirect = (_req: Request, res: Response) => {
   res.redirect(`${GOOGLE_AUTH_URL}?${params}`);
 };
 
-export const googleCallback = async (req: Request, res: Response) => {
+export const openIdCallback = async (req: Request, res: Response) => {
   const { code, state, error } = req.query as Record<string, string>;
+  const frontendUrl = process.env.FRONTEND_URL ?? "http://localhost:3000";
+  const redirectError = (msg: string) => res.redirect(`${frontendUrl}/auth/callback?error=${msg}`);
 
   if (error) {
-    res.status(400).json({ message: "OAuth error", error });
+    redirectError("oauth_error");
     return;
   }
 
   if (!state || !pendingStates.has(state)) {
-    res.status(400).json({ message: "Invalid or expired state parameter" });
+    redirectError("invalid_state");
     return;
   }
   pendingStates.delete(state);
 
   if (!code) {
-    res.status(400).json({ message: "Missing authorization code" });
+    redirectError("missing_code");
     return;
   }
 
@@ -65,7 +67,7 @@ export const googleCallback = async (req: Request, res: Response) => {
   });
 
   if (!tokenRes.ok) {
-    res.status(502).json({ message: "Failed to exchange authorization code" });
+    redirectError("token_exchange_failed");
     return;
   }
 
@@ -77,7 +79,7 @@ export const googleCallback = async (req: Request, res: Response) => {
   });
 
   if (!profileRes.ok) {
-    res.status(502).json({ message: "Failed to fetch Google profile" });
+    redirectError("profile_fetch_failed");
     return;
   }
 
@@ -99,7 +101,7 @@ export const googleCallback = async (req: Request, res: Response) => {
     expiresIn: "7d",
   });
 
-  res.json({ token, client });
+  res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
 };
 
 export const getMe = async (req: AuthRequest, res: Response) => {
