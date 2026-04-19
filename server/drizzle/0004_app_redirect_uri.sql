@@ -1,0 +1,1 @@
+ALTER TABLE "app_table" ADD COLUMN "redirect_uri" varchar(2048) NOT NULL;
