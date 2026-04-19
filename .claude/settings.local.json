@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun install:*)",
+      "Bash(bunx eslint:*)",
+      "Bash(bunx prettier:*)",
+      "Bash(bunx lint-staged:*)"
+    ]
+  }
+}
