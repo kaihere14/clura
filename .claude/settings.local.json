@@ -12,7 +12,8 @@
       "Bash(python *)",
       "Bash(node -e \"require\\('dotenv'\\).config\\(\\); const { Client } = require\\('pg'\\); const c = new Client\\({ connectionString: process.env.DATABASE_URL }\\); c.connect\\(\\).then\\(\\(\\) => { console.log\\('connected'\\); c.end\\(\\); }\\).catch\\(e => console.error\\('error:', e.message\\)\\);\")",
       "Bash(node -e ' *)",
-      "Bash(timeout 5 bun run test/server.ts)"
+      "Bash(timeout 5 bun run test/server.ts)",
+      "Bash(node *)"
     ]
   }
 }
