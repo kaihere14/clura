@@ -4,7 +4,9 @@
       "Bash(bun install:*)",
       "Bash(bunx eslint:*)",
       "Bash(bunx prettier:*)",
-      "Bash(bunx lint-staged:*)"
+      "Bash(bunx lint-staged:*)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
