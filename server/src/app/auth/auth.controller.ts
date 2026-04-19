@@ -10,13 +10,11 @@ const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, JWT_SECRET } = process.env;
 
-// In-memory state store (use Redis in production)
 const pendingStates = new Set<string>();
 
 export const openIdRedirect = (_req: Request, res: Response) => {
   const state = crypto.randomBytes(16).toString("hex");
   pendingStates.add(state);
-  // Clean up state after 10 minutes
   setTimeout(() => pendingStates.delete(state), 10 * 60 * 1000);
 
   const params = new URLSearchParams({
@@ -53,7 +51,6 @@ export const openIdCallback = async (req: Request, res: Response) => {
     return;
   }
 
-  // Exchange code for tokens
   const tokenRes = await fetch(GOOGLE_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -73,7 +70,6 @@ export const openIdCallback = async (req: Request, res: Response) => {
 
   const { access_token } = (await tokenRes.json()) as { access_token: string };
 
-  // Fetch Google profile
   const profileRes = await fetch(GOOGLE_USERINFO_URL, {
     headers: { Authorization: `Bearer ${access_token}` },
   });
