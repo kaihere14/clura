@@ -15,6 +15,34 @@
       "when": 1776592999646,
       "tag": "0001_high_hiroim",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776599915226,
+      "tag": "0002_client_uuid",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776600561767,
+      "tag": "0003_app_uuid",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776601862077,
+      "tag": "0004_app_redirect_uri",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776604163114,
+      "tag": "0005_user_session_tables",
+      "breakpoints": true
     }
   ]
 }

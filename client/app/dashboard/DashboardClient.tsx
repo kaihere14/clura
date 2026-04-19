@@ -53,7 +53,7 @@ export default function DashboardClient() {
     setNewApp(app);
   };
 
-  const handleDeleted = (id: number) => {
+  const handleDeleted = (id: string) => {
     setApps((prev) => prev.filter((a) => a.id !== id));
   };
 
@@ -65,7 +65,8 @@ export default function DashboardClient() {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <header className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <img src="/clura.png" alt="" className="size-6" />
             <span className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
               Clura
             </span>
@@ -81,7 +82,7 @@ export default function DashboardClient() {
             </span>
             <button
               onClick={handleLogout}
-              className="text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+              className="cursor-pointer text-sm text-neutral-500 transition-colors hover:text-red-400 dark:text-neutral-400 dark:hover:text-red-400"
             >
               Logout
             </button>

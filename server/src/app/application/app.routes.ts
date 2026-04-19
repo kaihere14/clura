@@ -4,6 +4,8 @@ import * as appController from "./app.controller";
 
 const router = Router();
 
+router.get("/validate/:appClientId", appController.validateApp);
+
 router.use(requireAuth);
 
 router.post("/", appController.createApp);

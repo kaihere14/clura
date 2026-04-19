@@ -6,35 +6,55 @@ import { updateApp, deleteApp, type App } from "@/lib/api";
 interface AppCardProps {
   app: App;
   token: string;
-  onDeleted: (id: number) => void;
+  onDeleted: (id: string) => void;
   onUpdated: (app: App) => void;
 }
 
 export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardProps) {
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(app.name);
+  const [editRedirectUri, setEditRedirectUri] = useState(app.redirectUri);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleSave = async () => {
-    if (!editName.trim() || editName === app.name) {
+    if (!editName.trim()) {
       setEditing(false);
       setEditName(app.name);
+      setEditRedirectUri(app.redirectUri);
+      return;
+    }
+    const nameChanged = editName.trim() !== app.name;
+    const uriChanged = editRedirectUri.trim() !== app.redirectUri;
+    if (!nameChanged && !uriChanged) {
+      setEditing(false);
       return;
     }
     setSaving(true);
     try {
-      const updated = await updateApp(token, app.id, editName.trim());
+      const updated = await updateApp(
+        token,
+        app.id,
+        editName.trim(),
+        uriChanged ? editRedirectUri.trim() : undefined,
+      );
       onUpdated(updated);
       setEditing(false);
     } catch {
       setEditName(app.name);
+      setEditRedirectUri(app.redirectUri);
       setEditing(false);
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setEditing(false);
+    setEditName(app.name);
+    setEditRedirectUri(app.redirectUri);
   };
 
   const handleDelete = async () => {
@@ -68,13 +88,7 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
             autoFocus
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSave();
-              if (e.key === "Escape") {
-                setEditing(false);
-                setEditName(app.name);
-              }
-            }}
+            onKeyDown={(e) => e.key === "Escape" && handleCancel()}
             className="flex-1 border-b border-neutral-400 bg-transparent pb-0.5 text-base font-semibold text-neutral-900 outline-none dark:border-neutral-500 dark:text-neutral-100"
           />
         ) : (
@@ -94,10 +108,7 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
                 {saving ? "Saving…" : "Save"}
               </button>
               <button
-                onClick={() => {
-                  setEditing(false);
-                  setEditName(app.name);
-                }}
+                onClick={handleCancel}
                 className="rounded-lg border border-neutral-200 px-2.5 py-1.5 text-xs text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"
               >
                 Cancel
@@ -129,6 +140,25 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
             {copied ? "Copied!" : "Copy"}
           </button>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+          Redirect URI
+        </span>
+        {editing ? (
+          <input
+            type="url"
+            value={editRedirectUri}
+            onChange={(e) => setEditRedirectUri(e.target.value)}
+            onKeyDown={(e) => e.key === "Escape" && handleCancel()}
+            className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-700 outline-none focus:ring-1 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+          />
+        ) : (
+          <span className="truncate text-xs text-neutral-700 dark:text-neutral-300">
+            {app.redirectUri}
+          </span>
+        )}
       </div>
 
       <div className="flex items-center justify-between border-t border-neutral-100 pt-1 dark:border-neutral-800">

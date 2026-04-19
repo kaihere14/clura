@@ -1,11 +1,12 @@
 import type { AuthUser } from "@/store/authStore";
 
 export interface App {
-  id: number;
-  clientId: number;
+  id: string;
+  clientId: string;
   name: string;
   appClientId: string;
   appSecret: string;
+  redirectUri: string;
   createdAt: string;
 }
 
@@ -27,17 +28,17 @@ export const getMe = (token: string) => apiFetch<AuthUser>("/v1/auth/me", token)
 
 export const fetchApps = (token: string) => apiFetch<App[]>("/v1/app", token);
 
-export const createApp = (token: string, name: string) =>
+export const createApp = (token: string, name: string, redirectUri: string) =>
   apiFetch<App>("/v1/app", token, {
     method: "POST",
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, redirectUri }),
   });
 
-export const updateApp = (token: string, id: number, name: string) =>
+export const updateApp = (token: string, id: string, name: string, redirectUri?: string) =>
   apiFetch<App>(`/v1/app/${id}`, token, {
     method: "PATCH",
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, ...(redirectUri ? { redirectUri } : {}) }),
   });
 
-export const deleteApp = (token: string, id: number) =>
+export const deleteApp = (token: string, id: string) =>
   apiFetch<void>(`/v1/app/${id}`, token, { method: "DELETE" });

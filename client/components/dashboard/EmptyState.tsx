@@ -16,7 +16,7 @@ export default function EmptyState({ onCreateClick }: EmptyStateProps) {
       </div>
       <button
         onClick={onCreateClick}
-        className="mt-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-neutral-900"
+        className="mt-2 cursor-pointer rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-neutral-900"
       >
         Create application
       </button>

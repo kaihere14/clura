@@ -9,7 +9,7 @@ export interface GoogleProfile {
   avatar?: string;
 }
 
-export const getClientById = async (id: number) => {
+export const getClientById = async (id: string) => {
   const [client] = await db.select().from(clientTable).where(eq(clientTable.id, id)).limit(1);
   return client ?? null;
 };
