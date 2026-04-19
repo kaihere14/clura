@@ -141,7 +141,7 @@ export const globalOpenIdCallback = async (req: Request, res: Response) => {
   });
 
   const { session, rawToken } = await service.createSession(user!.id, appClientId);
-  const { idToken, accessToken } = buildTokens(user!.id, appClientId, session.id, user!);
+  const { idToken, accessToken } = buildTokens(user!.id, appClientId, session!.id, user!);
 
   const redirectUrl = new URL(app.redirectUri);
   redirectUrl.searchParams.set("id_token", idToken);
@@ -152,13 +152,20 @@ export const globalOpenIdCallback = async (req: Request, res: Response) => {
 };
 
 export const globalRefreshTokens = async (req: Request, res: Response) => {
-  const { refresh_token, app_client_id } = req.body as {
+  const { refresh_token, app_client_id, app_secret } = req.body as {
     refresh_token?: string;
     app_client_id?: string;
+    app_secret?: string;
   };
 
-  if (!refresh_token || !app_client_id) {
-    res.status(400).json({ message: "refresh_token and app_client_id are required" });
+  if (!refresh_token || !app_client_id || !app_secret) {
+    res.status(400).json({ message: "refresh_token, app_client_id and app_secret are required" });
+    return;
+  }
+
+  const app = await service.getAppByClientId(app_client_id);
+  if (!app || app.appSecret !== app_secret) {
+    res.status(401).json({ message: "Invalid app credentials" });
     return;
   }
 
@@ -176,7 +183,7 @@ export const globalRefreshTokens = async (req: Request, res: Response) => {
     return;
   }
 
-  const { idToken, accessToken } = buildTokens(user.id, app_client_id, result.session.id, user);
+  const { idToken, accessToken } = buildTokens(user.id, app_client_id, result.session!.id, user);
 
   res.json({ id_token: idToken, access_token: accessToken, refresh_token: result.rawToken });
 };
