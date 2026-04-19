@@ -18,6 +18,7 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedRedirect, setCopiedRedirect] = useState(false);
 
   const handleSave = async () => {
     if (!editName.trim()) {
@@ -72,6 +73,12 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
     await navigator.clipboard.writeText(app.appClientId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyRedirectUri = async () => {
+    await navigator.clipboard.writeText(app.redirectUri);
+    setCopiedRedirect(true);
+    setTimeout(() => setCopiedRedirect(false), 2000);
   };
 
   const createdAt = new Date(app.createdAt).toLocaleDateString("en-US", {
@@ -155,9 +162,17 @@ export default function AppCard({ app, token, onDeleted, onUpdated }: AppCardPro
             className="rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-700 outline-none focus:ring-1 focus:ring-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
           />
         ) : (
-          <span className="truncate text-xs text-neutral-700 dark:text-neutral-300">
-            {app.redirectUri}
-          </span>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 truncate rounded-lg bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+              {app.redirectUri}
+            </code>
+            <button
+              onClick={copyRedirectUri}
+              className="rounded-lg bg-neutral-100 px-2 py-1.5 text-xs transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+            >
+              {copiedRedirect ? "Copied!" : "Copy"}
+            </button>
+          </div>
         )}
       </div>
 
