@@ -17,7 +17,6 @@ const {
   JWT_ISSUER,
 } = process.env;
 
-// state → appClientId
 const pendingStates = new Map<string, string>();
 
 const signToken = (payload: object, expiresIn: string) =>
