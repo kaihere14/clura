@@ -1,3 +1,4 @@
+
 # Clura
 
 Clura is a self-hosted OAuth 2.0 / OpenID Connect identity provider. Developers register their applications on the Clura dashboard, then send their end-users to Clura's hosted login page. After the user authenticates, Clura issues a signed **ID token**, **access token**, and **refresh token** — all verifiable using Clura's public JWKS endpoint, with no SDK required.
@@ -25,7 +26,7 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the key
 
 ---
 
-## Quickstart
+## 🚀 Quickstart
 
 ### Step 1 — Sign in to the Clura dashboard
 
@@ -50,21 +51,21 @@ After creation you will receive three values — copy them immediately, the secr
 
 Redirect your users to:
 
-```
+
 https://<clura-host>/user-login/<appClientId>
-```
+
 
 After the user signs in with Google, Clura redirects them to your `redirectUri` with three query parameters:
 
-```
+
 https://yourapp.com/callback?id_token=<jwt>&access_token=<jwt>&refresh_token=<opaque>
-```
+
 
 ### Step 4 — Handle the callback
 
 Read the tokens from the query string in your callback handler:
 
-```ts
+ts
 // Node.js / Express example
 app.get("/callback", (req, res) => {
   const { id_token, access_token, refresh_token } = req.query;
@@ -72,7 +73,7 @@ app.get("/callback", (req, res) => {
   // Store refresh_token server-side (httpOnly cookie or encrypted session)
   // Verify id_token or access_token using the JWKS endpoint (see below)
 });
-```
+
 
 ### Step 5 — Verify tokens
 
@@ -80,11 +81,11 @@ Tokens are RS256-signed JWTs. Verify them using Clura's public JWKS endpoint.
 
 Install dependencies:
 
-```bash
+bash
 npm install jwks-rsa jsonwebtoken
-```
 
-```ts
+
+ts
 import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 
@@ -108,11 +109,11 @@ async function verifyAccessToken(token: string) {
     issuer: "https://<clura-host>",
   });
 }
-```
+
 
 The verified payload contains:
 
-```ts
+ts
 {
   sub: "uuid-of-user",        // stable unique user ID — use this as your user's primary key
   app_client_id: "uuid",      // your app's client ID
@@ -121,12 +122,9 @@ The verified payload contains:
   iat: 1234567890,
   exp: 1234567890
 }
-```
+
 
 Use `sub` as the stable, unique identifier for the user in your own database.
-
----
-
 ## Protecting routes
 
 ### Express middleware
