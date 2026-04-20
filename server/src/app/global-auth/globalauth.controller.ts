@@ -142,10 +142,15 @@ export const globalOpenIdCallback = async (req: Request, res: Response) => {
   const { session, rawToken } = await service.createSession(user!.id, appClientId);
   const { idToken, accessToken } = buildTokens(user!.id, appClientId, session!.id, user!);
 
+  const authCode = await service.createAuthCode({
+    appClientId,
+    idToken,
+    accessToken,
+    refreshToken: rawToken,
+  });
+
   const redirectUrl = new URL(app.redirectUri);
-  redirectUrl.searchParams.set("id_token", idToken);
-  redirectUrl.searchParams.set("access_token", accessToken);
-  redirectUrl.searchParams.set("refresh_token", rawToken);
+  redirectUrl.searchParams.set("code", authCode.code);
 
   res.redirect(redirectUrl.toString());
 };
@@ -185,4 +190,31 @@ export const globalRefreshTokens = async (req: Request, res: Response) => {
   const { idToken, accessToken } = buildTokens(user.id, app_client_id, result.session!.id, user);
 
   res.json({ id_token: idToken, access_token: accessToken, refresh_token: result.rawToken });
+};
+
+export const exchangeCode = async (req: Request, res: Response) => {
+  const { code, app_secret } = req.body as { code?: string; app_secret?: string };
+
+  if (!code || !app_secret) {
+    res.status(400).json({ message: "code and app_secret are required" });
+    return;
+  }
+
+  const app = await service.getAppBySecret(app_secret);
+  if (!app) {
+    res.status(401).json({ message: "Invalid app credentials" });
+    return;
+  }
+
+  const tokens = await service.exchangeAuthCode(code, app.appClientId);
+  if (!tokens) {
+    res.status(401).json({ message: "Invalid, expired, or already used code" });
+    return;
+  }
+
+  res.json({
+    id_token: tokens.idToken,
+    access_token: tokens.accessToken,
+    refresh_token: tokens.refreshToken,
+  });
 };
