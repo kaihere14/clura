@@ -43,6 +43,13 @@
       "when": 1776604163114,
       "tag": "0005_user_session_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776707614795,
+      "tag": "0006_fresh_jane_foster",
+      "breakpoints": true
     }
   ]
 }

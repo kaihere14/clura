@@ -71,10 +71,39 @@ const html = (body: string) =>
       }
     }
 
+    async function doExchange() {
+      const code = document.getElementById('code_input').value;
+      const app_secret = document.getElementById('app_secret_input').value;
+      const resultEl = document.getElementById('exchange_result');
+      resultEl.innerHTML = '<span style="color:#737373">Exchanging…</span>';
+      try {
+        const res = await fetch('${CLURA_URL}/v1/global-auth/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, app_secret }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          resultEl.innerHTML = '<span class="badge err">ERROR ' + res.status + '</span><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+          return;
+        }
+        resultEl.innerHTML = '<span class="badge ok">SUCCESS — tokens issued</span>';
+        document.getElementById('id_token_input').value = data.id_token ?? '';
+        document.getElementById('access_token_input').value = data.access_token ?? '';
+        document.getElementById('refresh_token_input').value = data.refresh_token ?? '';
+        document.getElementById('refresh_secret_input').value = app_secret;
+        document.getElementById('id_token_card').style.display = '';
+        document.getElementById('access_token_card').style.display = '';
+        document.getElementById('refresh_card').style.display = '';
+      } catch(e) {
+        resultEl.innerHTML = '<span class="badge err">NETWORK ERROR: ' + e.message + '</span>';
+      }
+    }
+
     async function doRefresh() {
       const refresh_token = document.getElementById('refresh_token_input').value;
       const app_client_id = document.getElementById('app_client_id_input').value;
-      const app_secret = document.getElementById('app_secret_input').value;
+      const app_secret = document.getElementById('refresh_secret_input').value;
       const resultEl = document.getElementById('refresh_result');
       resultEl.innerHTML = '<span style="color:#737373">Refreshing…</span>';
       try {
@@ -135,20 +164,19 @@ Bun.serve({
           <p style="font-size:0.85rem;color:#a3a3a3;line-height:1.6">
             1. Create an app in the Clura dashboard with <code style="color:#e5e5e5">redirectUri = http://localhost:4000/callback</code><br/>
             2. Visit <code style="color:#e5e5e5">http://localhost:3000/user-login/&lt;appClientId&gt;</code><br/>
-            3. Login with Google → you'll land here at <code style="color:#e5e5e5">/callback</code> with tokens
+            3. Login with Google → you'll land here at <code style="color:#e5e5e5">/callback</code> with a short-lived code<br/>
+            4. Enter your <code style="color:#e5e5e5">app_secret</code> and click Exchange to get your tokens
           </p>
         </div>
       `);
     }
 
     if (url.pathname === "/callback") {
-      const idToken = url.searchParams.get("id_token") ?? "";
-      const accessToken = url.searchParams.get("access_token") ?? "";
-      const refreshToken = url.searchParams.get("refresh_token") ?? "";
+      const code = url.searchParams.get("code") ?? "";
 
-      if (!idToken && !accessToken) {
+      if (!code) {
         return html(
-          `<h1>Clura Test App — Callback</h1><div class="card"><span class="badge err">No tokens received</span><p style="font-size:0.85rem;color:#a3a3a3;margin-top:8px">Missing id_token and access_token in query params.</p></div>`,
+          `<h1>Clura Test App — Callback</h1><div class="card"><span class="badge err">No code received</span><p style="font-size:0.85rem;color:#a3a3a3;margin-top:8px">Missing code in query params.</p></div>`,
         );
       }
 
@@ -156,30 +184,40 @@ Bun.serve({
         <h1>Clura Test App — Callback received</h1>
         <div class="grid">
 
-          <div class="card">
+          <div class="card full">
+            <h2>Exchange Code for Tokens</h2>
+            <div class="tag">auth code (auto-filled, valid for 2 minutes, single-use)</div>
+            <input id="code_input" value="${code}" readonly />
+            <div class="tag">app_secret — shown once at app creation</div>
+            <input id="app_secret_input" placeholder="64-char hex secret" />
+            <button onclick="doExchange()">POST /v1/global-auth/token</button>
+            <div id="exchange_result" class="result"></div>
+          </div>
+
+          <div class="card" id="id_token_card" style="display:none">
             <h2>ID Token</h2>
-            <input id="id_token_input" value="${idToken}" readonly />
+            <input id="id_token_input" readonly />
             <button onclick="copy(document.getElementById('id_token_input').value, this)" class="secondary">Copy</button>
             <button onclick="verifyToken('id_token_input')">Decode & Inspect</button>
             <div id="id_token_input_verify" class="result"></div>
           </div>
 
-          <div class="card">
+          <div class="card" id="access_token_card" style="display:none">
             <h2>Access Token</h2>
-            <input id="access_token_input" value="${accessToken}" readonly />
+            <input id="access_token_input" readonly />
             <button onclick="copy(document.getElementById('access_token_input').value, this)" class="secondary">Copy</button>
             <button onclick="verifyToken('access_token_input')">Decode & Inspect</button>
             <div id="access_token_input_verify" class="result"></div>
           </div>
 
-          <div class="card full">
+          <div class="card full" id="refresh_card" style="display:none">
             <h2>Test Token Refresh</h2>
             <div class="tag">refresh_token (auto-filled)</div>
-            <input id="refresh_token_input" value="${refreshToken}" />
+            <input id="refresh_token_input" />
             <div class="tag">app_client_id — copy from dashboard</div>
             <input id="app_client_id_input" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-            <div class="tag">app_secret — shown once at app creation</div>
-            <input id="app_secret_input" placeholder="64-char hex secret" />
+            <div class="tag">app_secret</div>
+            <input id="refresh_secret_input" placeholder="64-char hex secret" />
             <button onclick="doRefresh()">POST /v1/global-auth/refresh</button>
             <div id="refresh_result" class="result"></div>
           </div>

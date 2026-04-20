@@ -1,7 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import crypto from "node:crypto";
 import { db } from "../../db";
-import { userTable, sessionTable, appTable } from "../../db/schema";
+import { userTable, sessionTable, appTable, authCodeTable } from "../../db/schema";
 
 export interface GoogleProfile {
   googleId: string;
@@ -81,4 +81,42 @@ export const rotateSession = async (hashedToken: string, appClientId: string) =>
 export const getUserById = async (id: string) => {
   const [user] = await db.select().from(userTable).where(eq(userTable.id, id)).limit(1);
   return user ?? null;
+};
+
+export const getAppBySecret = async (appSecret: string) => {
+  const [app] = await db.select().from(appTable).where(eq(appTable.appSecret, appSecret)).limit(1);
+  return app ?? null;
+};
+
+export const createAuthCode = async (params: {
+  appClientId: string;
+  idToken: string;
+  accessToken: string;
+  refreshToken: string;
+}) => {
+  const code = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+  const [authCode] = await db
+    .insert(authCodeTable)
+    .values({ code, ...params, expiresAt, used: false })
+    .returning();
+  return authCode;
+};
+
+export const exchangeAuthCode = async (code: string, appClientId: string) => {
+  const [authCode] = await db
+    .select()
+    .from(authCodeTable)
+    .where(and(eq(authCodeTable.code, code), eq(authCodeTable.appClientId, appClientId)))
+    .limit(1);
+
+  if (!authCode || authCode.used || authCode.expiresAt < new Date()) return null;
+
+  await db.update(authCodeTable).set({ used: true }).where(eq(authCodeTable.id, authCode.id));
+
+  return {
+    idToken: authCode.idToken,
+    accessToken: authCode.accessToken,
+    refreshToken: authCode.refreshToken,
+  };
 };

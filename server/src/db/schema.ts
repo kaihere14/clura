@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const clientTable = pgTable("client_table", {
@@ -42,6 +42,19 @@ export const sessionTable = pgTable("session_table", {
   refreshToken: varchar("refresh_token", { length: 128 }).notNull().unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at").notNull(),
+});
+
+export const authCodeTable = pgTable("auth_code_table", {
+  id: uuid().primaryKey().defaultRandom(),
+  code: varchar({ length: 64 }).notNull().unique(),
+  appClientId: uuid("app_client_id")
+    .notNull()
+    .references(() => appTable.appClientId),
+  idToken: varchar("id_token", { length: 2048 }).notNull(),
+  accessToken: varchar("access_token", { length: 2048 }).notNull(),
+  refreshToken: varchar("refresh_token", { length: 64 }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  used: boolean().notNull().default(false),
 });
 
 export const clientRelations = relations(clientTable, ({ many }) => ({

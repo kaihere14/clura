@@ -8,7 +8,8 @@ export const getOpenIdConfiguration = (_req: Request, res: Response) => {
   res.json({
     issuer,
     authorization_endpoint: `${issuer}/v1/global-auth/google`,
-    token_endpoint: `${issuer}/v1/global-auth/refresh`,
+    token_endpoint: `${issuer}/v1/global-auth/token`,
+    token_refresh_endpoint: `${issuer}/v1/global-auth/refresh`,
     jwks_uri: `${issuer}/.well-known/jwks.json`,
     response_types_supported: ["code"],
     grant_types_supported: ["authorization_code", "refresh_token"],
