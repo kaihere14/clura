@@ -100,6 +100,7 @@ export const createAuthCode = async (params: {
     .insert(authCodeTable)
     .values({ code, ...params, expiresAt, used: false })
     .returning();
+  if (!authCode) throw new Error("Failed to create auth code");
   return authCode;
 };
 
