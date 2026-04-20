@@ -7,25 +7,22 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the key
 
 ---
 
-## How it works
+## 🛠️ How it works
 
-```
 1. Developer registers an app on the Clura dashboard
          ↓
 2. Developer sends their user to:
-   https://<clura>/user-login/<appClientId>
+   `https://<clura>/user-login/<appClientId>`
          ↓
 3. User authenticates with Google
          ↓
-4. Clura issues ID token + access token + refresh token
+4. Clura issues a short-lived **authorization code** (valid for 2 minutes)
          ↓
-5. Clura redirects to your app's redirectUri with all three tokens
+5. Clura redirects to your app's `redirectUri` with the `code` parameter
          ↓
-6. Developer verifies tokens using Clura's JWKS public key
-```
-
----
-
+6. Developer exchanges the `code` + `app_secret` for tokens at the `/v1/global-auth/token` endpoint
+         ↓
+7. Developer verifies tokens using Clura's JWKS public key
 ## 🚀 Quickstart
 
 ### Step 1 — Sign in to the Clura dashboard
@@ -263,7 +260,13 @@ async function refreshTokens(refreshToken: string) {
 
 ---
 
-## Token reference
+## 🔑 Token reference
+
+### Authorization Code
+
+- **Format:** Opaque 64-char hex string
+- **Expiry:** 2 minutes
+- **Purpose:** Short-lived code exchanged for a full token set. Single-use only.
 
 ### ID Token
 
@@ -271,7 +274,7 @@ async function refreshTokens(refreshToken: string) {
 - **Expiry:** 1 hour
 - **Purpose:** Verify user identity once after login. Contains profile data.
 
-```json
+
 {
   "sub": "uuid-of-user",
   "email": "user@example.com",
@@ -283,7 +286,7 @@ async function refreshTokens(refreshToken: string) {
   "iat": 1234567890,
   "exp": 1234567890
 }
-```
+
 
 ### Access Token
 
@@ -291,7 +294,7 @@ async function refreshTokens(refreshToken: string) {
 - **Expiry:** 15 minutes
 - **Purpose:** Authenticate API requests. Send as `Authorization: Bearer <token>`.
 
-```json
+
 {
   "sub": "uuid-of-user",
   "app_client_id": "uuid-of-your-app",
@@ -300,7 +303,7 @@ async function refreshTokens(refreshToken: string) {
   "iat": 1234567890,
   "exp": 1234567890
 }
-```
+
 
 ### Refresh Token
 
@@ -308,18 +311,15 @@ async function refreshTokens(refreshToken: string) {
 - **Expiry:** 7 days
 - **Purpose:** Exchange for a new token set when the access token expires
 - **Storage:** Server-side only — never send to the browser, never store in localStorage
-
----
-
-## Discovery endpoints
+## 🔍 Discovery endpoints
 
 ### JWKS
 
-```http
+http
 GET https://<clura-host>/.well-known/jwks.json
-```
 
-```json
+
+
 {
   "keys": [
     {
@@ -332,27 +332,39 @@ GET https://<clura-host>/.well-known/jwks.json
     }
   ]
 }
-```
+
 
 ### OpenID Configuration
 
-```http
+http
 GET https://<clura-host>/.well-known/openid-configuration
-```
 
-```json
+
+
 {
   "issuer": "https://<clura-host>",
   "authorization_endpoint": "https://<clura-host>/v1/global-auth/google",
-  "token_endpoint": "https://<clura-host>/v1/global-auth/refresh",
+  "token_endpoint": "https://<clura-host>/v1/global-auth/token",
+  "token_refresh_endpoint": "https://<clura-host>/v1/global-auth/refresh",
   "jwks_uri": "https://<clura-host>/.well-known/jwks.json",
   "response_types_supported": ["code"],
+  "grant_types_supported": ["authorization_code", "refresh_token"],
+  "subject_types_supported": ["public"],
   "id_token_signing_alg_values_supported": ["RS256"],
-  "scopes_supported": ["openid", "email", "profile"]
+  "scopes_supported": ["openid", "email", "profile"],
+  "token_endpoint_auth_methods_supported": ["client_secret_post"],
+  "claims_supported": [
+    "sub",
+    "email",
+    "name",
+    "picture",
+    "app_client_id",
+    "sid",
+    "iss",
+    "iat",
+    "exp"
+  ]
 }
-```
-
----
 
 ## App management API
 
@@ -518,7 +530,7 @@ clura/
 
 ---
 
-## Database schema
+## 🗄️ Database schema
 
 ### `client_table` — Developer accounts
 
@@ -565,8 +577,18 @@ clura/
 | `created_at`    | timestamp    | Session creation time                  |
 | `expires_at`    | timestamp    | 7-day expiry                           |
 
----
+### `auth_code_table` — Temporary authorization codes
 
+| Column          | Type         | Description                               |
+| --------------- | ------------ | ----------------------------------------- |
+| `id`            | uuid PK      | Internal ID                               |
+| `code`          | varchar(64)  | The authorization code sent to the client |
+| `app_client_id` | uuid FK      | App the code belongs to                   |
+| `id_token`      | varchar      | Pre-generated ID token                    |
+| `access_token`  | varchar      | Pre-generated access token                |
+| `refresh_token` | varchar(64)  | Raw refresh token                         |
+| `expires_at`    | timestamp    | 2-minute expiry                           |
+| `used`          | boolean      | Whether the code has been exchanged       |
 ## Stack
 
 | Layer    | Technology                         |
