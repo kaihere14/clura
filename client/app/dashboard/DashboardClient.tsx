@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { fetchApps, type App } from "@/lib/api";
 import AppCard from "@/components/dashboard/AppCard";
@@ -65,7 +65,12 @@ export default function DashboardClient() {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <header className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-1">
+          <div
+            onClick={() => {
+              redirect("/");
+            }}
+            className="flex cursor-pointer items-center gap-1"
+          >
             <img src="/clura.png" alt="" className="size-6" />
             <span className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
               Clura

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 const PROTECTED = ["/dashboard"];
-const PUBLIC_WITH_REDIRECT = ["/", "/login"];
+const PUBLIC_WITH_REDIRECT = ["/login"];
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
