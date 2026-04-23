@@ -274,11 +274,11 @@ const TerminalPanel = () => {
 };
 
 const ArchDiagram = () => (
-  <div className="relative col-span-full w-full overflow-hidden border-t-2 border-neutral-200 dark:border-neutral-800">
+  <div className="relative col-span-full hidden w-full overflow-hidden border-t-2 border-neutral-200 md:block dark:border-neutral-800">
     <div className="absolute inset-0 bg-[repeating-linear-gradient(315deg,var(--tw-color,#d4d4d4)_0%,var(--tw-color,#d4d4d4)_1px,transparent_1px,transparent_50%)] bg-[size:10px_10px] opacity-30 dark:opacity-10" />
     <svg
       viewBox="0 0 1100 270"
-      className="relative w-full"
+      className="relative w-full min-w-[780px]"
       preserveAspectRatio="xMidYMid meet"
       aria-hidden="true"
     >
