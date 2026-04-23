@@ -1,1 +1,2 @@
 bunx lint-staged
+cd client && bunx tsc --noEmit
