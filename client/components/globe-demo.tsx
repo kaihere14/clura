@@ -218,14 +218,14 @@ const arcs = [
 export default function GlobeDemo() {
   return (
     <div className="relative w-full overflow-hidden rounded-3xl bg-white dark:border-neutral-800 dark:bg-neutral-950">
-      <div className="relative flex h-[460px] flex-col items-center justify-center md:flex-row">
+      <div className="relative flex h-auto flex-col items-center justify-center md:h-[460px] md:flex-row">
         {/* Text — left */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="relative z-10 flex flex-col gap-4 px-10 py-10 md:w-1/2"
+          className="relative z-10 flex w-full flex-col gap-4 px-6 py-8 md:w-1/2 md:px-10 md:py-10"
         >
           <h2 className="text-3xl font-bold leading-tight text-neutral-800 dark:text-white">
             Self-host Clura{" "}
@@ -276,7 +276,7 @@ export default function GlobeDemo() {
         </motion.div>
 
         {/* Globe — right, with violet radial glow behind it */}
-        <div className="absolute inset-0 md:relative md:h-full md:w-1/2">
+        <div className="relative h-[280px] w-full md:h-full md:w-1/2">
           {/* violet glow so globe doesn't look cut off on white bg */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_60%_50%,rgba(139,92,246,0.12),transparent)]" />
           {/* fade left into text area */}

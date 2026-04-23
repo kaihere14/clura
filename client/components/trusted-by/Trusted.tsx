@@ -46,7 +46,7 @@ const Trusted = () => {
       <h1 className="text-center text-sm font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
         Trusted By
       </h1>
-      <div className="flex items-center justify-center gap-12">
+      <div className="flex flex-wrap items-center justify-center gap-6 px-4 sm:gap-12">
         {companies.map(({ name, logo }) => (
           <div
             key={name}

@@ -3,20 +3,20 @@ import { IconArrowRight, IconMessageCircle } from "@tabler/icons-react";
 const CTA = () => {
   return (
     <div className="relative mx-10 mx-auto mb-16 max-w-[1200px]">
-      <div className="border-1 z-99 absolute -left-20 -top-1 w-[91vw] border-dashed"></div>
-      <div className="border-1 z-99 absolute -bottom-1 -left-20 w-[91vw] border-dashed"></div>
-      <div className="border-1 z-99 absolute -right-1 -top-8 h-[54vh] border-dashed"></div>
-      <div className="border-1 z-99 absolute -left-10 -top-8 h-[54vh] border-dashed"></div>
+      <div className="border-1 z-99 absolute -left-20 -top-1 hidden w-[91vw] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -bottom-1 -left-20 hidden w-[91vw] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -right-1 -top-8 hidden h-[54vh] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -left-10 -top-8 hidden h-[54vh] border-dashed md:block"></div>
 
       <div className="grid overflow-hidden rounded-3xl md:grid-cols-[1fr_1px_400px]">
         {/* ── Left: headline + buttons ── */}
-        <div className="flex flex-col justify-center gap-8 px-14 py-16">
+        <div className="flex flex-col justify-center gap-8 px-6 py-10 md:px-14 md:py-16">
           <div className="flex flex-col gap-4">
-            <p className="text-4xl leading-tight text-neutral-400 md:text-5xl dark:text-neutral-500">
+            <p className="text-2xl leading-tight text-neutral-400 sm:text-3xl md:text-4xl lg:text-5xl dark:text-neutral-500">
               Add auth with the{" "}
               <span className="font-bold text-neutral-800 dark:text-white">speed of light</span>
             </p>
-            <p className="text-4xl leading-tight text-neutral-400 md:text-5xl dark:text-neutral-500">
+            <p className="text-2xl leading-tight text-neutral-400 sm:text-3xl md:text-4xl lg:text-5xl dark:text-neutral-500">
               Get <span className="text-violet-500">self-hosted</span> OAuth 2.0 for the most
               advanced <span className="text-purple-600">apps.</span>
             </p>
@@ -44,7 +44,7 @@ const CTA = () => {
         <div className="hidden self-stretch border-dashed bg-neutral-200 md:block dark:bg-neutral-800" />
 
         {/* ── Right: testimonial ── */}
-        <div className="flex flex-col justify-center gap-4 px-12 py-16">
+        <div className="flex flex-col justify-center gap-4 px-6 py-10 md:px-12 md:py-16">
           <p className="text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
             "This is the best auth setup I&apos;ve shipped. Dropped our SaaS auth vendor in an
             afternoon. Ten on ten recommended — I just can&apos;t wait to see where Clura goes."

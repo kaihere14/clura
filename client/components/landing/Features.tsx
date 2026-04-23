@@ -274,7 +274,7 @@ const TerminalPanel = () => {
 };
 
 const ArchDiagram = () => (
-  <div className="relative col-span-3 w-full overflow-hidden border-t-2 border-neutral-200 dark:border-neutral-800">
+  <div className="relative col-span-full w-full overflow-hidden border-t-2 border-neutral-200 dark:border-neutral-800">
     <div className="absolute inset-0 bg-[repeating-linear-gradient(315deg,var(--tw-color,#d4d4d4)_0%,var(--tw-color,#d4d4d4)_1px,transparent_1px,transparent_50%)] bg-[size:10px_10px] opacity-30 dark:opacity-10" />
     <svg
       viewBox="0 0 1100 270"
@@ -508,7 +508,7 @@ const Features = () => {
       className="mt-10 flex flex-col text-center text-4xl font-bold text-neutral-700 dark:text-neutral-100"
     >
       Features
-      <div className="mx-10 mb-6 mt-10 grid h-fit divide-x-2 divide-neutral-200 overflow-hidden rounded-3xl border-2 border-neutral-200 sm:grid-cols-3 md:mx-0 dark:divide-neutral-800 dark:border-neutral-800">
+      <div className="mx-4 mb-6 mt-10 grid h-fit grid-cols-1 divide-y-2 divide-neutral-200 overflow-hidden rounded-3xl border-2 border-neutral-200 md:mx-0 md:grid-cols-3 md:divide-x-2 md:divide-y-0 dark:divide-neutral-800 dark:border-neutral-800">
         <JwtPanel />
         <FlowPanel />
         <TerminalPanel />
