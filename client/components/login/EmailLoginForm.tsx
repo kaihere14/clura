@@ -6,9 +6,9 @@ const EmailLoginForm = () => {
 
   return (
     <>
-      <span className="border-1 mt-3 w-full border-dashed dark:border-neutral-800"></span>
+      <span className="border-1 mt-3 w-full border-dashed border-neutral-400 dark:border-neutral-800"></span>
       <div className="jutify-center flex w-full flex-col items-center">
-        <div className="mt-3 rounded-xl border-2 border-neutral-800 p-[2px]">
+        <div className="mt-3 rounded-xl border-2 border-neutral-400 p-[2px] dark:border-neutral-800">
           <input
             type="email"
             value={email}
