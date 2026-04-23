@@ -497,19 +497,24 @@ bun run dev:test      # Test app on port 4000
 
 ---
 
-## Project structure
+## 📂 Project structure
 
-```
+
 clura/
-├── client/                  # Next.js frontend (dashboard + login pages)
+├── client/                  # Next.js frontend (landing, docs + dashboard)
 │   ├── app/
 │   │   ├── dashboard/       # Developer dashboard
+│   │   ├── docs/            # Documentation page
 │   │   ├── login/           # Developer login
-│   │   ├── auth/callback/   # OAuth callback handler
+│   │   ├── auth/            # OAuth callback handlers
 │   │   └── user-login/[id]/ # End-user login page
 │   ├── components/
 │   │   ├── dashboard/       # AppCard, CreateAppModal, SecretRevealModal
-│   │   └── login/           # LoginHeader, SocialLogins, EmailLoginForm
+│   │   ├── landing/         # Hero, Features, CTA, OpenSource components
+│   │   ├── login/           # LoginHeader, SocialLogins, EmailLoginForm
+│   │   ├── trusted-by/      # Trusted companies section
+│   │   └── ui/              # Globe and UI primitives (Aceternity)
+│   ├── data/                # Globe visualization data
 │   ├── store/
 │   │   └── authStore.ts     # Zustand auth store
 │   └── lib/
@@ -526,10 +531,9 @@ clura/
 │           └── index.ts         # DB client
 └── test/
     └── server.ts            # Test app (port 4000) to simulate a developer's app
-```
+
 
 ---
-
 ## 🗄️ Database schema
 
 ### `client_table` — Developer accounts
@@ -589,19 +593,19 @@ clura/
 | `refresh_token` | varchar(64)  | Raw refresh token                         |
 | `expires_at`    | timestamp    | 2-minute expiry                           |
 | `used`          | boolean      | Whether the code has been exchanged       |
-## Stack
+## 💻 Stack
 
-| Layer    | Technology                         |
-| -------- | ---------------------------------- |
-| Runtime  | Bun                                |
-| Server   | Express 5 + TypeScript             |
-| Client   | Next.js 16 (App Router) + React 19 |
-| Database | PostgreSQL + Drizzle ORM           |
-| Auth     | Google OAuth 2.0 + RS256 JWT       |
-| Styling  | Tailwind CSS 4                     |
+| Layer          | Technology                                     |
+| -------------- | ---------------------------------------------- |
+| Runtime        | Bun                                            |
+| Server         | Express 5 + TypeScript                         |
+| Client         | Next.js (App Router) + React 19                |
+| UI & Animation | Tailwind CSS 4, Aceternity UI, Three.js, Motion|
+| Database       | PostgreSQL + Drizzle ORM                       |
+| Auth           | Google OAuth 2.0 + RS256 JWT                   |
+| Analytics      | Vercel Analytics                               |
 
 ---
-
 ## Security notes
 
 - `appSecret` is displayed once at creation — store it in your server's environment variables and never commit it
