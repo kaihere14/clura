@@ -1,5 +1,7 @@
 import Features from "@/components/landing/Features";
 import Landing from "@/components/landing/Hero";
+import OpenSource from "@/components/landing/OpenSource";
+import CTA from "@/components/landing/CTA";
 import Trusted from "@/components/trusted-by/Trusted";
 
 const page = () => {
@@ -8,6 +10,8 @@ const page = () => {
       <Landing />
       <Trusted />
       <Features />
+      <OpenSource />
+      <CTA />
     </div>
   );
 };
