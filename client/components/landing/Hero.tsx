@@ -26,10 +26,10 @@ const Hero = () => {
                 Docs
               </a>
               <a
-                href="#"
+                href="#features"
                 className="transition-colors hover:text-neutral-800 dark:hover:text-white"
               >
-                Quickstart
+                Features
               </a>
               <a
                 href="#"
@@ -50,7 +50,7 @@ const Hero = () => {
             <h1 className="-z-999 max-w-xl text-6xl font-semibold tracking-tight text-black dark:text-neutral-100">
               Your own Clerk. Your own Auth0.
             </h1>
-            <p className="max-w-xl text-xl tracking-tight text-neutral-600 dark:text-neutral-300">
+            <p className="max-w-xl text-xl tracking-tight text-neutral-500 dark:text-neutral-300">
               Self-hosted OAuth 2.0 identity provider. Register apps, authenticate users with
               Google, and receive RS256-signed JWTs no SDK, no vendor lock-in, your infra.
             </p>
