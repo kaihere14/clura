@@ -3,10 +3,10 @@ import { IconArrowRight, IconMessageCircle } from "@tabler/icons-react";
 const CTA = () => {
   return (
     <div className="relative mx-10 mx-auto mb-16 max-w-[1200px]">
-      <div className="border-1 z-99 absolute -left-20 -top-1 hidden w-[91vw] border-dashed md:block"></div>
-      <div className="border-1 z-99 absolute -bottom-1 -left-20 hidden w-[91vw] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -left-8 -top-1 hidden w-[87vw] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -bottom-1 -left-8 hidden w-[87vw] border-dashed md:block"></div>
       <div className="border-1 z-99 absolute -right-1 -top-8 hidden h-[54vh] border-dashed md:block"></div>
-      <div className="border-1 z-99 absolute -left-10 -top-8 hidden h-[54vh] border-dashed md:block"></div>
+      <div className="border-1 z-99 absolute -top-8 left-0 hidden h-[54vh] border-dashed md:block"></div>
 
       <div className="grid overflow-hidden rounded-3xl md:grid-cols-[1fr_1px_400px]">
         {/* ── Left: headline + buttons ── */}
