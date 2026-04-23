@@ -1,12 +1,12 @@
-const Landing = () => {
+const Hero = () => {
   return (
-    <div className="relative mx-auto flex h-full w-full max-w-[1200px] items-center justify-center">
-      <YLine className="absolute top-0 h-14 w-full" />
-      <YLine className="absolute bottom-0 h-14 w-full" />
-      <XLine className="absolute left-0 h-screen w-14" />
-      <XLine className="absolute right-0 h-screen w-14" />
+    <div className="relative flex h-full w-full items-center justify-center">
+      <YLine className="absolute top-0 h-10 w-full" />
+      {/* <YLine className="absolute bottom-0 h-14 w-full" /> */}
+      <XLine className="mask-b-from-90% absolute left-0 h-screen w-14" />
+      <XLine className="mask-b-from-90% absolute right-0 h-screen w-14" />
 
-      <div className="size-full p-14">
+      <div className="size-full px-14 pt-10">
         <div className="relative flex size-full flex-col justify-between px-4 py-14">
           <img
             src="/mountains-snow.webp"
@@ -72,7 +72,7 @@ const Landing = () => {
           </div>
 
           <StraighLines className="mask-b-from-10% absolute inset-x-0 top-0 h-12 w-full" />
-          <StraighLines className="mask-t-from-10% absolute inset-x-0 bottom-0 h-12 w-full" />
+          {/* <StraighLines className="mask-t-from-10% absolute inset-x-0 bottom-0 h-12 w-full" /> */}
         </div>
       </div>
     </div>
@@ -102,4 +102,4 @@ const StraighLines = ({ className }: { className: string }) => {
     ></div>
   );
 };
-export default Landing;
+export default Hero;
