@@ -25,7 +25,8 @@ export const appTable = pgTable("app_table", {
 
 export const userTable = pgTable("user_table", {
   id: uuid().primaryKey().defaultRandom(),
-  googleId: varchar("google_id", { length: 255 }).notNull().unique(),
+  googleId: varchar("google_id", { length: 255 }).unique(),
+  githubId: varchar("github_id", { length: 255 }).unique(),
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   avatar: varchar({ length: 500 }),

@@ -57,6 +57,13 @@
       "when": 1777009888175,
       "tag": "0007_chief_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1777012715911,
+      "tag": "0008_striped_gorilla_man",
+      "breakpoints": true
     }
   ]
 }

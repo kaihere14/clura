@@ -18,7 +18,7 @@ const SocialLogins = ({ appClientId }: SocialLoginsProps) => {
     : `${API_URL}/v1/auth/google`;
 
   const githubHref = isUserLoginRoute
-    ? `${API_URL}/v1/global-auth/google?appClientId=${appClientId ?? ""}`
+    ? `${API_URL}/v1/global-auth/github?appClientId=${appClientId ?? ""}`
     : `${API_URL}/v1/auth/github`;
 
   return (
