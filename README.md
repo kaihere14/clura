@@ -600,7 +600,7 @@ clura/
 | Runtime        | Bun                                            |
 | Server         | Express 5 + TypeScript                         |
 | Client         | Next.js (App Router) + React 19                |
-| UI & Animation | Tailwind CSS 4, Aceternity UI, Three.js, Motion|
+| UI & Animation | Tailwind CSS 4, Aceternity UI, Three.js, Motion, tsParticles |
 | Database       | PostgreSQL + Drizzle ORM                       |
 | Auth           | Google OAuth 2.0 + RS256 JWT                   |
 | Analytics      | Vercel Analytics                               |
