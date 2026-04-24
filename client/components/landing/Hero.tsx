@@ -64,7 +64,7 @@ const Hero = () => {
               </a>
               <a
                 href="/docs"
-                className="text-shadow-lg text-shadow-black/2 text-md rounded-md px-2 py-2 text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white"
+                className="text-shadow-lg text-shadow-black/2 text-md rounded-md px-2 py-2 text-neutral-700 transition-colors duration-200 hover:bg-neutral-200/40 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white"
               >
                 Read documentation
               </a>

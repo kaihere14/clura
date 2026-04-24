@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className="w-full bg-gradient-to-b from-neutral-100/5 to-neutral-200 bg-clip-text text-center text-[280px] font-bold text-transparent">
+    <div className="w-full bg-gradient-to-b from-neutral-100/5 to-neutral-200 bg-clip-text text-center text-[120px] font-bold text-transparent md:text-[180px] lg:text-[280px]">
       CLURA
     </div>
   );
