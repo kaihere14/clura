@@ -3,6 +3,7 @@ import Landing from "@/components/landing/Hero";
 import OpenSource from "@/components/landing/OpenSource";
 import CTA from "@/components/landing/CTA";
 import Trusted from "@/components/trusted-by/Trusted";
+import Footer from "@/components/landing/Footer";
 
 const page = () => {
   return (
@@ -12,6 +13,7 @@ const page = () => {
       <Features />
       <OpenSource />
       <CTA />
+      <Footer />
     </div>
   );
 };
