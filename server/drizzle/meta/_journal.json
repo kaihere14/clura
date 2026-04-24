@@ -50,6 +50,13 @@
       "when": 1776707614795,
       "tag": "0006_fresh_jane_foster",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1777009888175,
+      "tag": "0007_chief_jazinda",
+      "breakpoints": true
     }
   ]
 }

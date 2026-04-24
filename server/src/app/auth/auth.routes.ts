@@ -1,11 +1,15 @@
 import { Router } from "express";
-import { openIdRedirect, openIdCallback, getMe } from "./auth.controller";
+import * as auth from "./auth.controller";
 import { requireAuth } from "./auth.middleware";
 
 const router = Router();
 
-router.get("/google", openIdRedirect);
-router.get("/google/callback", openIdCallback);
-router.get("/me", requireAuth, getMe);
+router.get("/google", auth.googleIdRedirect);
+router.get("/google/callback", auth.googleIdCallback);
+
+router.get("/github", auth.githubIdRedirect);
+router.get("/github/callback", auth.githubIdCallback);
+
+router.get("/me", requireAuth, auth.getMe);
 
 export default router;

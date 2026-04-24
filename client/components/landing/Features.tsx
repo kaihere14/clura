@@ -232,7 +232,7 @@ const TerminalPanel = () => {
   return (
     <div
       className="group relative flex cursor-pointer flex-col justify-center gap-5 overflow-hidden rounded-tr-3xl bg-neutral-100/20 p-6 dark:bg-neutral-800/20"
-      onClick={run}
+      onMouseEnter={run}
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-violet-50/60 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 dark:from-violet-950/30" />
 

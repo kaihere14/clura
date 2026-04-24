@@ -44,7 +44,7 @@ export default function DashboardClient() {
 
   const handleLogout = () => {
     clearAuth();
-    router.replace("/login");
+    redirect("/login");
   };
 
   const handleCreated = (app: App) => {
