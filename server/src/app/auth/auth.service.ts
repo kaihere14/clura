@@ -9,6 +9,13 @@ export interface GoogleProfile {
   avatar?: string;
 }
 
+export interface GithubProfile {
+  githubId: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
 export const getClientById = async (id: string) => {
   const [client] = await db.select().from(clientTable).where(eq(clientTable.id, id)).limit(1);
   return client ?? null;
@@ -29,6 +36,30 @@ export const upsertClient = async (profile: GoogleProfile) => {
     .insert(clientTable)
     .values({
       googleId: profile.googleId,
+      name: profile.name,
+      email: profile.email,
+      avatar: profile.avatar,
+    })
+    .returning();
+
+  return client;
+};
+
+export const upsertClientByGithub = async (profile: GithubProfile) => {
+  const existing = await db
+    .select()
+    .from(clientTable)
+    .where(eq(clientTable.githubId, profile.githubId))
+    .limit(1);
+
+  if (existing.length > 0) {
+    return existing[0];
+  }
+
+  const [client] = await db
+    .insert(clientTable)
+    .values({
+      githubId: profile.githubId,
       name: profile.name,
       email: profile.email,
       avatar: profile.avatar,

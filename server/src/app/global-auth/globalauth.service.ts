@@ -10,6 +10,13 @@ export interface GoogleProfile {
   avatar?: string;
 }
 
+export interface GithubProfile {
+  githubId: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
 export const upsertUser = async (profile: GoogleProfile) => {
   const existing = await db
     .select()
@@ -23,6 +30,28 @@ export const upsertUser = async (profile: GoogleProfile) => {
     .insert(userTable)
     .values({
       googleId: profile.googleId,
+      name: profile.name,
+      email: profile.email,
+      avatar: profile.avatar,
+    })
+    .returning();
+
+  return user;
+};
+
+export const upsertUserByGithub = async (profile: GithubProfile) => {
+  const existing = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.githubId, profile.githubId))
+    .limit(1);
+
+  if (existing.length > 0) return existing[0];
+
+  const [user] = await db
+    .insert(userTable)
+    .values({
+      githubId: profile.githubId,
       name: profile.name,
       email: profile.email,
       avatar: profile.avatar,

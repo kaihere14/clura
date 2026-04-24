@@ -32,10 +32,10 @@ const Hero = () => {
                 Features
               </a>
               <a
-                href="#"
+                href="#source"
                 className="transition-colors hover:text-neutral-800 dark:hover:text-white"
               >
-                Self-host
+                Open Source
               </a>
             </div>
             <a
