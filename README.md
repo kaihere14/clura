@@ -27,7 +27,7 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the key
 
 ### Step 1 — Sign in to the Clura dashboard
 
-Visit the Clura dashboard and sign in with Google. This creates your developer account.
+Visit the Clura dashboard and sign in with Google or GitHub. This creates your developer account.
 
 ### Step 2 — Create an application
 
@@ -43,8 +43,7 @@ After creation you will receive three values — copy them immediately, the secr
 | `appClientId` | Public identifier — safe to embed in URLs                            |
 | `appSecret`   | Private secret — store server-side only, never expose to the browser |
 | `redirectUri` | The callback URL you configured                                      |
-
-### Step 3 — Send users to Clura's login page
+n### Step 3 — Send users to Clura's login page
 
 Redirect your users to:
 
@@ -52,7 +51,7 @@ Redirect your users to:
 https://<clura-host>/user-login/<appClientId>
 
 
-After the user signs in with Google, Clura redirects them to your `redirectUri` with three query parameters:
+After the user signs in with Google or GitHub, Clura redirects them to your `redirectUri` with three query parameters:
 
 
 https://yourapp.com/callback?id_token=<jwt>&access_token=<jwt>&refresh_token=<opaque>
@@ -415,19 +414,19 @@ The `appSecret` is returned only on creation and never again.
 
 - [Bun](https://bun.sh) v1.3+
 - PostgreSQL database
-- Google Cloud project with OAuth 2.0 credentials
+- Google Cloud and GitHub projects with OAuth 2.0 credentials
 
 ### 1. Clone and install
 
-```bash
+bash
 git clone https://github.com/your-username/clura.git
 cd clura
 bun install
-```
+
 
 ### 2. Generate an RSA key pair
 
-```bash
+bash
 node -e "
 const { generateKeyPairSync } = require('crypto');
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
@@ -438,7 +437,7 @@ const { privateKey, publicKey } = generateKeyPairSync('rsa', {
 console.log(JSON.stringify(privateKey));
 console.log(JSON.stringify(publicKey));
 "
-```
+
 
 Copy the output — you will need both keys in the next step.
 
@@ -446,13 +445,21 @@ Copy the output — you will need both keys in the next step.
 
 Create `server/.env`:
 
-```env
+env
 DATABASE_URL=postgresql://user:password@localhost:5432/clura
 
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:8000/v1/auth/google/callback
 GLOBAL_REDIRECT_URI=http://localhost:8000/v1/global-auth/callback
+
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+GITHUB_REDIRECT_UI=http://localhost:8000/v1/auth/github/callback
+
+GLOBAL_GITHUB_CLIENT_ID=your_global_github_client_id
+GLOBAL_GITHUB_CLIENT_SECRET=your_global_github_client_secret
+GLOBAL_GITHUB_REDIRECT_URI=http://localhost:8000/v1/global-auth/github/callback
 
 JWT_SECRET=a-long-random-string-for-developer-sessions
 
@@ -462,40 +469,39 @@ JWT_KEY_ID=clura-1
 JWT_ISSUER=http://localhost:8000
 
 FRONTEND_URL=http://localhost:3000
-```
+
 
 ### 4. Configure the client
 
 Create `client/.env.local`:
 
-```env
+env
 NEXT_PUBLIC_API_URL=http://localhost:8000
-```
+
 
 ### 5. Run database migrations
 
-```bash
+bash
 cd server
 bunx drizzle-kit generate
 bunx drizzle-kit migrate
-```
 
-### 6. Add redirect URIs in Google Console
 
-Go to **Google Cloud Console → APIs & Services → Credentials** and add both of these to your OAuth app's **Authorized redirect URIs**:
+### 6. Add redirect URIs in Provider Consoles
+
+Add these to your Google Cloud and GitHub OAuth app's **Authorized redirect URIs**:
 
 - `http://localhost:8000/v1/auth/google/callback`
 - `http://localhost:8000/v1/global-auth/callback`
+- `http://localhost:8000/v1/auth/github/callback`
+- `http://localhost:8000/v1/global-auth/github/callback`
 
 ### 7. Start
 
-```bash
+bash
 bun run dev:server    # API on port 8000
 bun run dev:client    # Dashboard on port 3000
 bun run dev:test      # Test app on port 4000
-```
-
----
 
 ## 📂 Project structure
 
@@ -541,7 +547,8 @@ clura/
 | Column       | Type      | Description           |
 | ------------ | --------- | --------------------- |
 | `id`         | uuid PK   | Developer ID          |
-| `google_id`  | varchar   | Google OAuth sub      |
+| `google_id`  | varchar   | Google OAuth sub (opt)|
+| `github_id`  | varchar   | GitHub OAuth ID (opt) |
 | `name`       | varchar   | Display name          |
 | `email`      | varchar   | Email address         |
 | `avatar`     | varchar   | Profile picture URL   |
@@ -564,7 +571,8 @@ clura/
 | Column       | Type      | Description                             |
 | ------------ | --------- | --------------------------------------- |
 | `id`         | uuid PK   | User ID — the `sub` claim in all tokens |
-| `google_id`  | varchar   | Google OAuth sub                        |
+| `google_id`  | varchar   | Google OAuth sub (opt)                  |
+| `github_id`  | varchar   | GitHub OAuth ID (opt)                   |
 | `name`       | varchar   | Display name                            |
 | `email`      | varchar   | Email address                           |
 | `avatar`     | varchar   | Profile picture URL                     |
