@@ -509,6 +509,7 @@ bun run dev:test      # Test app on port 4000
 clura/
 ├── client/                  # Next.js frontend (landing, docs + dashboard)
 │   ├── app/
+│   │   ├── page.tsx          # Landing page entry, now uses responsive width (md:w-full) for mobile screens
 │   │   ├── dashboard/       # Developer dashboard
 │   │   ├── docs/            # Documentation page
 │   │   ├── login/           # Developer login
