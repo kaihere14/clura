@@ -1,6 +1,6 @@
 const Hero = () => {
   return (
-    <div className="relative flex h-full w-full items-center justify-center">
+    <div className="relative flex h-full items-center justify-center md:w-full">
       <YLine className="absolute top-0 hidden h-10 w-full md:block" />
       {/* <YLine className="absolute bottom-0 h-14 w-full" /> */}
       <XLine className="mask-b-from-90% absolute left-0 hidden h-screen w-14 md:block" />
