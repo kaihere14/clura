@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import crypto from "node:crypto";
 import { db } from "../../db";
-import { appTable } from "../../db/schema";
+import { appTable, sessionTable, authCodeTable } from "../../db/schema";
 
 const appPublicColumns = {
   id: appTable.id,
@@ -58,9 +58,17 @@ export const validateAppClientId = async (appClientId: string): Promise<boolean>
 };
 
 export const deleteApp = async (id: string, clientId: string) => {
-  const [app] = await db
-    .delete(appTable)
+  const [target] = await db
+    .select({ appClientId: appTable.appClientId })
+    .from(appTable)
     .where(and(eq(appTable.id, id), eq(appTable.clientId, clientId)))
-    .returning();
+    .limit(1);
+
+  if (!target) return null;
+
+  await db.delete(authCodeTable).where(eq(authCodeTable.appClientId, target.appClientId));
+  await db.delete(sessionTable).where(eq(sessionTable.appClientId, target.appClientId));
+
+  const [app] = await db.delete(appTable).where(eq(appTable.id, id)).returning();
   return app ?? null;
 };

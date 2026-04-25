@@ -3,7 +3,7 @@ import GlobeDemo from "../globe-demo";
 
 const OpenSource = () => {
   return (
-    <div id="source" className="relative mx-10 mb-20 md:mx-0">
+    <div id="source" className="relative mb-20 md:mx-0">
       <div className="border-1 top-15 z-99 absolute -left-8 hidden w-[87vw] border-dashed md:block"></div>
       <div className="border-1 z-99 absolute -left-8 bottom-5 hidden w-[87vw] border-dashed md:block"></div>
       <div className="border-1 z-99 absolute -right-1 top-7 hidden h-[60vh] border-dashed md:block"></div>

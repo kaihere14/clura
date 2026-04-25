@@ -6,14 +6,14 @@ const Hero = () => {
       <XLine className="mask-b-from-90% absolute left-0 hidden h-screen w-14 md:block" />
       <XLine className="mask-b-from-90% absolute right-0 hidden h-screen w-14 md:block" />
 
-      <div className="size-full px-4 pt-10 sm:px-14">
+      <div className="size-full pt-2 sm:px-14 md:pt-10">
         <div className="relative flex size-full flex-col justify-between gap-8 px-2 py-6 sm:px-4 sm:py-14">
           <img
             src="/mountains-snow.webp"
             alt="snow"
             className="-z-99 mask-t-from-90% mask-b-from-10% mask-radial-from-50% absolute inset-0 h-full w-full object-cover"
           />
-          <nav className="flex items-center justify-between">
+          <nav className="flex items-center justify-between px-2">
             <span className="flex items-center justify-center bg-gradient-to-r from-violet-500 to-purple-700 bg-clip-text text-3xl font-bold text-neutral-800 text-transparent">
               <img src="/clura.png" alt="" className="size-8" />
               Clura
@@ -46,7 +46,7 @@ const Hero = () => {
             </a>
           </nav>
 
-          <div className="flex flex-col justify-start gap-2">
+          <div className="flex flex-col justify-start gap-2 px-2 md:px-0">
             <h1 className="-z-999 max-w-xl text-3xl font-semibold tracking-tight text-black sm:text-5xl lg:text-6xl dark:text-neutral-100">
               Your own Clerk. Your own Auth0.
             </h1>
