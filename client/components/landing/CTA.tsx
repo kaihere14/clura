@@ -2,7 +2,7 @@ import { IconArrowRight, IconMessageCircle } from "@tabler/icons-react";
 
 const CTA = () => {
   return (
-    <div className="relative mx-10 mx-auto mb-16 max-w-[1200px]">
+    <div className="relative mx-10 mx-auto mb-16 md:max-w-[1200px]">
       <div className="border-1 z-99 absolute -left-8 -top-1 hidden w-[87vw] border-dashed md:block"></div>
       <div className="border-1 z-99 absolute -bottom-1 -left-8 hidden w-[87vw] border-dashed md:block"></div>
       <div className="border-1 z-99 absolute -right-1 -top-8 hidden h-[54vh] border-dashed md:block"></div>
