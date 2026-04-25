@@ -23,13 +23,16 @@ const CTA = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <a
-              href="/login"
-              className="text-shadow-lg text-shadow-black/2 text-md easeIn flex items-center gap-2 rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-2 text-white transition-colors duration-300 hover:from-purple-700 hover:to-violet-300"
-            >
-              Self-host now
-              <IconArrowRight size={15} />
-            </a>
+            <div className="flex items-center justify-center rounded-lg border-2 border-purple-500 p-[0.6px]">
+              <a
+                href="/login"
+                className="text-shadow-lg text-shadow-black/2 text-md easeIn flex items-center gap-2 rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-2 text-white transition-colors duration-300 hover:from-purple-700 hover:to-violet-300"
+              >
+                Self-host now
+                <IconArrowRight size={15} />
+              </a>
+            </div>
+
             <a
               href="/docs"
               className="text-shadow-lg text-shadow-black/2 text-md flex items-center gap-2 rounded-md px-2 py-2 text-neutral-700 transition-colors duration-200 hover:bg-neutral-200/40 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white"

@@ -42,9 +42,9 @@ export default function DashboardClient() {
       .finally(() => setLoading(false));
   }, [token, router, clearAuth]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearAuth();
-    redirect("/login");
+    redirect("/");
   };
 
   const handleCreated = (app: App) => {

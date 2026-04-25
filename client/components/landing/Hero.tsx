@@ -38,12 +38,14 @@ const Hero = () => {
                 Open Source
               </a>
             </div>
-            <a
-              href="/login"
-              className="text-shadow-xs rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-1.5 text-sm text-white drop-shadow-xl transition-colors hover:bg-gradient-to-t hover:from-purple-700 hover:to-violet-300"
-            >
-              Get started
-            </a>
+            <div className="flex items-center justify-center rounded-lg border-2 border-purple-500 p-[0.6px]">
+              <a
+                href="/login"
+                className="text-shadow-xs rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-1.5 text-sm text-white drop-shadow-xl transition-colors hover:bg-gradient-to-t hover:from-purple-700 hover:to-violet-300"
+              >
+                Get started
+              </a>
+            </div>
           </nav>
 
           <div className="flex flex-col justify-start gap-2 px-2 md:px-0">
@@ -56,12 +58,14 @@ const Hero = () => {
             </p>
 
             <div className="buttons mt-4 flex gap-2">
-              <a
-                href="/login"
-                className="text-shadow-lg text-shadow-black/2 text-md easeIn rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-gradient-to-t hover:from-purple-700 hover:to-violet-300"
-              >
-                Self-host now
-              </a>
+              <div className="flex items-center justify-center rounded-lg border-2 border-purple-500 p-[0.6px]">
+                <a
+                  href="/login"
+                  className="text-shadow-lg text-shadow-black/2 text-md easeIn easeIn rounded-md bg-gradient-to-t from-purple-700 to-violet-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-gradient-to-t hover:from-purple-700 hover:to-violet-300"
+                >
+                  Self-host now
+                </a>
+              </div>
               <a
                 href="/docs"
                 className="text-shadow-lg text-shadow-black/2 text-md rounded-md px-2 py-2 text-neutral-700 transition-colors duration-200 hover:bg-neutral-200/40 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white"
