@@ -14,15 +14,17 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the key
 2. Developer sends their user to:
    `https://<clura>/user-login/<appClientId>`
          ↓
-3. User authenticates with Google
+3. Clura checks for an existing SSO session (via secure cookie)
          ↓
-4. Clura issues a short-lived **authorization code** (valid for 2 minutes)
+4. User authenticates with Google or GitHub (if no active session)
          ↓
-5. Clura redirects to your app's `redirectUri` with the `code` parameter
+5. Clura issues a short-lived **authorization code** (valid for 2 minutes) and sets an SSO cookie
          ↓
-6. Developer exchanges the `code` + `app_secret` for tokens at the `/v1/global-auth/token` endpoint
+6. Clura redirects to your app's `redirectUri` with the `code` parameter
          ↓
-7. Developer verifies tokens using Clura's JWKS public key
+7. Developer exchanges the `code` + `app_secret` for tokens at the `/v1/global-auth/token` endpoint
+         ↓
+8. Developer verifies tokens using Clura's JWKS public key
 ## 🚀 Quickstart
 
 ### Step 1 — Sign in to the Clura dashboard
@@ -43,7 +45,8 @@ After creation you will receive three values — copy them immediately, the secr
 | `appClientId` | Public identifier — safe to embed in URLs                            |
 | `appSecret`   | Private secret — store server-side only, never expose to the browser |
 | `redirectUri` | The callback URL you configured                                      |
-n### Step 3 — Send users to Clura's login page
+
+### Step 3 — Send users to Clura's login page
 
 Redirect your users to:
 
@@ -51,31 +54,38 @@ Redirect your users to:
 https://<clura-host>/user-login/<appClientId>
 
 
-After the user signs in with Google or GitHub, Clura redirects them to your `redirectUri` with three query parameters:
+After the user signs in, Clura redirects them to your `redirectUri` with a `code` parameter:
 
 
-https://yourapp.com/callback?id_token=<jwt>&access_token=<jwt>&refresh_token=<opaque>
+https://yourapp.com/callback?code=<auth_code>
 
 
-### Step 4 — Handle the callback
+### Step 4 — Exchange code for tokens
 
-Read the tokens from the query string in your callback handler:
+Exchange the authorization code for tokens using your `appSecret` via a server-side POST request to `/v1/global-auth/token`.
 
 ts
 // Node.js / Express example
-app.get("/callback", (req, res) => {
-  const { id_token, access_token, refresh_token } = req.query;
+app.get("/callback", async (req, res) => {
+  const { code } = req.query;
 
-  // Store refresh_token server-side (httpOnly cookie or encrypted session)
-  // Verify id_token or access_token using the JWKS endpoint (see below)
+  const response = await fetch("https://<clura-host>/v1/global-auth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      code,
+      app_secret: process.env.CLURA_APP_SECRET
+    })
+  });
+
+  const { id_token, access_token, refresh_token } = await response.json();
+  // Store tokens securely...
 });
 
 
 ### Step 5 — Verify tokens
 
 Tokens are RS256-signed JWTs. Verify them using Clura's public JWKS endpoint.
-
-Install dependencies:
 
 bash
 npm install jwks-rsa jsonwebtoken
@@ -111,7 +121,7 @@ The verified payload contains:
 
 ts
 {
-  sub: "uuid-of-user",        // stable unique user ID — use this as your user's primary key
+  sub: "uuid-of-user",        // stable unique user ID
   app_client_id: "uuid",      // your app's client ID
   sid: "uuid-of-session",     // session ID
   iss: "https://<clura-host>",
@@ -119,8 +129,6 @@ ts
   exp: 1234567890
 }
 
-
-Use `sub` as the stable, unique identifier for the user in your own database.
 ## Protecting routes
 
 ### Express middleware
@@ -589,6 +597,16 @@ clura/
 | `refresh_token` | varchar(128) | SHA-256 hash of the raw token          |
 | `created_at`    | timestamp    | Session creation time                  |
 | `expires_at`    | timestamp    | 7-day expiry                           |
+
+### `sso_session_table` — Global SSO sessions
+
+| Column       | Type        | Description                   |
+| ------------ | ----------- | ----------------------------- |
+| `id`         | uuid PK     | Internal ID                   |
+| `user_id`    | uuid FK     | End-user                      |
+| `token`      | varchar(64) | SHA-256 hash of the SSO token |
+| `created_at` | timestamp   | Session creation time         |
+| `expires_at` | timestamp   | 7-day expiry                  |
 
 ### `auth_code_table` — Temporary authorization codes
 
