@@ -1,7 +1,7 @@
 import { eq, and } from "drizzle-orm";
 import crypto from "node:crypto";
 import { db } from "../../db";
-import { userTable, sessionTable, appTable, authCodeTable } from "../../db/schema";
+import { userTable, sessionTable, appTable, authCodeTable, ssoSessionTable } from "../../db/schema";
 
 export interface GoogleProfile {
   googleId: string;
@@ -131,6 +131,38 @@ export const createAuthCode = async (params: {
     .returning();
   if (!authCode) throw new Error("Failed to create auth code");
   return authCode;
+};
+
+export const generateSSOToken = () => crypto.randomBytes(32).toString("hex");
+
+export const hashToken = (raw: string) => crypto.createHash("sha256").update(raw).digest("hex");
+
+export const createSSOSession = async (userId: string) => {
+  const rawToken = generateSSOToken();
+  const token = hashToken(rawToken);
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await db.insert(ssoSessionTable).values({ userId, token, expiresAt });
+  return rawToken;
+};
+
+export const verifySSOCookie = async (raw: string) => {
+  const token = hashToken(raw);
+  const [ssoSession] = await db
+    .select()
+    .from(ssoSessionTable)
+    .where(eq(ssoSessionTable.token, token))
+    .limit(1);
+  if (!ssoSession || ssoSession.expiresAt < new Date()) return null;
+  return ssoSession;
+};
+
+export const deleteSSOSession = async (raw: string) => {
+  const token = hashToken(raw);
+  await db.delete(ssoSessionTable).where(eq(ssoSessionTable.token, token));
+};
+
+export const deleteAllUserSSOSessions = async (userId: string) => {
+  await db.delete(ssoSessionTable).where(eq(ssoSessionTable.userId, userId));
 };
 
 export const exchangeAuthCode = async (code: string, appClientId: string) => {

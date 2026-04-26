@@ -59,6 +59,16 @@ export const authCodeTable = pgTable("auth_code_table", {
   used: boolean().notNull().default(false),
 });
 
+export const ssoSessionTable = pgTable("sso_session_table", {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  token: varchar({ length: 64 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 export const clientRelations = relations(clientTable, ({ many }) => ({
   apps: many(appTable),
 }));
@@ -77,6 +87,13 @@ export const userRelations = relations(userTable, ({ many }) => ({
 export const sessionRelations = relations(sessionTable, ({ one }) => ({
   user: one(userTable, {
     fields: [sessionTable.userId],
+    references: [userTable.id],
+  }),
+}));
+
+export const ssoSessionRelations = relations(ssoSessionTable, ({ one }) => ({
+  user: one(userTable, {
+    fields: [ssoSessionTable.userId],
     references: [userTable.id],
   }),
 }));

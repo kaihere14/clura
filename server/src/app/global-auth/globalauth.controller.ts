@@ -26,6 +26,18 @@ const {
 
 const pendingStates = new Map<string, string>();
 
+const SSO_COOKIE = "clura_sso_session";
+const SSO_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
+
+const setSSOCookie = (res: Response, raw: string) => {
+  res.cookie(SSO_COOKIE, raw, {
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: SSO_MAX_AGE,
+    secure: process.env.NODE_ENV === "production",
+  });
+};
+
 const signToken = (payload: object, expiresIn: string) =>
   jwt.sign(payload, JWT_PRIVATE_KEY!.replace(/\\n/g, "\n"), {
     algorithm: "RS256",
@@ -155,6 +167,9 @@ export const globalOpenIdCallback = async (req: Request, res: Response) => {
     accessToken,
     refreshToken: rawToken,
   });
+
+  const rawSSOToken = await service.createSSOSession(user!.id);
+  setSSOCookie(res, rawSSOToken);
 
   const redirectUrl = new URL(app.redirectUri);
   redirectUrl.searchParams.set("code", authCode.code);
@@ -299,6 +314,9 @@ export const globalGithubCallback = async (req: Request, res: Response) => {
     refreshToken: rawToken,
   });
 
+  const rawSSOToken = await service.createSSOSession(user!.id);
+  setSSOCookie(res, rawSSOToken);
+
   const redirectUrl = new URL(app.redirectUri);
   redirectUrl.searchParams.set("code", authCode.code);
 
@@ -340,6 +358,81 @@ export const globalRefreshTokens = async (req: Request, res: Response) => {
   const { idToken, accessToken } = buildTokens(user.id, app_client_id, result.session!.id, user);
 
   res.json({ id_token: idToken, access_token: accessToken, refresh_token: result.rawToken });
+};
+
+export const checkLoginStatus = async (req: Request, res: Response) => {
+  const { appClientId } = req.body as { appClientId?: string };
+
+  if (!appClientId) {
+    res.json({ status: "invalid" });
+    return;
+  }
+
+  const app = await service.getAppByClientId(appClientId);
+  if (!app) {
+    res.json({ status: "invalid" });
+    return;
+  }
+
+  const rawSSOToken = req.cookies[SSO_COOKIE] as string | undefined;
+  if (!rawSSOToken) {
+    res.json({ status: "login" });
+    return;
+  }
+
+  const ssoSession = await service.verifySSOCookie(rawSSOToken);
+  if (!ssoSession) {
+    res.json({ status: "login" });
+    return;
+  }
+
+  const user = await service.getUserById(ssoSession.userId);
+  if (!user) {
+    res.json({ status: "login" });
+    return;
+  }
+
+  const { session, rawToken } = await service.createSession(user.id, appClientId);
+  const { idToken, accessToken } = buildTokens(user.id, appClientId, session!.id, user);
+  const authCode = await service.createAuthCode({
+    appClientId,
+    idToken,
+    accessToken,
+    refreshToken: rawToken,
+  });
+
+  const redirectUrl = new URL(app.redirectUri);
+  redirectUrl.searchParams.set("code", authCode.code);
+
+  res.json({ status: "redirect", url: redirectUrl.toString() });
+};
+
+export const globalLogout = async (req: Request, res: Response) => {
+  const rawToken = req.cookies[SSO_COOKIE] as string | undefined;
+  if (rawToken) {
+    await service.deleteSSOSession(rawToken);
+  }
+  res.clearCookie(SSO_COOKIE, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.json({ message: "Logged out" });
+};
+
+export const globalLogoutRedirect = async (req: Request, res: Response) => {
+  const rawToken = req.cookies[SSO_COOKIE] as string | undefined;
+  if (rawToken) {
+    await service.deleteSSOSession(rawToken);
+  }
+  res.clearCookie(SSO_COOKIE, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  const next = req.query.next as string | undefined;
+  const frontendUrl = FRONTEND_URL ?? "http://localhost:3000";
+  res.redirect(next ?? frontendUrl);
 };
 
 export const exchangeCode = async (req: Request, res: Response) => {

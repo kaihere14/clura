@@ -1,5 +1,5 @@
 const CLURA_URL = "http://localhost:8000";
-const PORT = 4000;
+const PORT = 3300;
 
 const html = (body: string) =>
   new Response(
@@ -136,14 +136,6 @@ const html = (body: string) =>
       }
     }
 
-    function doLogout() {
-      const appClientId = document.getElementById('logout_app_client_id').value.trim();
-      const next = appClientId
-        ? 'http://localhost:3000/user-login/' + encodeURIComponent(appClientId)
-        : 'http://localhost:3000';
-      window.location.href = '${CLURA_URL}/v1/global-auth/logout?next=' + encodeURIComponent(next);
-    }
-
     async function fetchOIDC() {
       const resultEl = document.getElementById('oidc_result');
       try {
@@ -240,14 +232,6 @@ Bun.serve({
             <h2>OpenID Configuration</h2>
             <button onclick="fetchOIDC()">GET /.well-known/openid-configuration</button>
             <div id="oidc_result" class="result"></div>
-          </div>
-
-          <div class="card full">
-            <h2>SSO Logout</h2>
-            <div class="tag">appClientId — to return to the right login page after logout</div>
-            <input id="logout_app_client_id" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-            <button onclick="doLogout()">GET /v1/global-auth/logout</button>
-            <div class="tag" style="margin-top:8px;color:#525252">Clears the <code style="color:#a3a3a3">clura_sso_session</code> cookie and redirects back to the login page — next visit will require OAuth again.</div>
           </div>
 
         </div>
