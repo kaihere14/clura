@@ -420,6 +420,21 @@ export const globalLogout = async (req: Request, res: Response) => {
   res.json({ message: "Logged out" });
 };
 
+export const globalLogoutRedirect = async (req: Request, res: Response) => {
+  const rawToken = req.cookies[SSO_COOKIE] as string | undefined;
+  if (rawToken) {
+    await service.deleteSSOSession(rawToken);
+  }
+  res.clearCookie(SSO_COOKIE, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  const next = req.query.next as string | undefined;
+  const frontendUrl = FRONTEND_URL ?? "http://localhost:3000";
+  res.redirect(next ?? frontendUrl);
+};
+
 export const exchangeCode = async (req: Request, res: Response) => {
   const { code, app_secret } = req.body as { code?: string; app_secret?: string };
 
