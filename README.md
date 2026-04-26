@@ -416,7 +416,7 @@ The `appSecret` is returned only on creation and never again.
 
 ---
 
-## Self-hosting
+## Self-hosting 🏠
 
 ### Prerequisites
 
@@ -477,6 +477,7 @@ JWT_KEY_ID=clura-1
 JWT_ISSUER=http://localhost:8000
 
 FRONTEND_URL=http://localhost:3000
+SSO_COOKIE_DOMAIN=localhost
 
 
 ### 4. Configure the client
