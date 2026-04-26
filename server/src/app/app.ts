@@ -1,6 +1,7 @@
 import expres from "express";
 import type { Request, Response, Application } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import authRouter from "./auth/auth.routes";
 import appRouter from "./application/app.routes";
@@ -12,8 +13,9 @@ export const getApp = (): Application => {
   const app = expres();
   app.use(cors());
   app.use(expres.json());
+  app.use(cookieParser());
 
-  app.get("/", (req: Request, res: Response) => {
+  app.get("/", (_req: Request, res: Response) => {
     res.send("Server is up and running");
   });
 

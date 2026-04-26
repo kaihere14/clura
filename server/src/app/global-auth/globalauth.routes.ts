@@ -5,6 +5,8 @@ import {
   globalGithubRedirect,
   globalGithubCallback,
   globalRefreshTokens,
+  globalLogout,
+  checkLoginStatus,
   exchangeCode,
 } from "./globalauth.controller";
 
@@ -16,5 +18,7 @@ router.get("/github", globalGithubRedirect);
 router.get("/github/callback", globalGithubCallback);
 router.post("/refresh", globalRefreshTokens);
 router.post("/token", exchangeCode);
+router.get("/check", checkLoginStatus);
+router.post("/logout", globalLogout);
 
 export default router;
