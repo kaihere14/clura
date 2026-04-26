@@ -7,7 +7,7 @@ import Footer from "@/components/landing/Footer";
 
 const page = () => {
   return (
-    <div className="relative mx-auto min-h-screen w-full overflow-x-clip [--pattern:var(--color-neutral-300)] md:max-w-[1200px] dark:[--pattern:var(--color-neutral-700)]">
+    <div className="relative mx-auto min-h-screen w-full [--pattern:var(--color-neutral-300)] md:max-w-[1200px] dark:[--pattern:var(--color-neutral-700)]">
       <Landing />
       <Trusted />
       <Features />

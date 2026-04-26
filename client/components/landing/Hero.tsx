@@ -10,7 +10,7 @@ const Hero = () => {
       {/* <YLine className="absolute bottom-0 h-14 w-full" /> */}
       <XLine className="mask-b-from-90% absolute left-0 hidden h-full w-14 md:block" />
       <XLine className="mask-b-from-90% absolute right-0 hidden h-full w-14 md:block" />
-      <StraighLines className="mask-b-from-10% absolute inset-x-0 top-0 hidden h-12 w-full md:block" />
+      <StraighLines className="mask-b-from-10% absolute inset-x-0 top-0 mt-10 hidden h-12 w-full md:block" />
 
       <div className="relative z-10 flex min-h-screen w-full flex-col pt-2 sm:px-14 md:pt-10">
         <div className="flex w-full flex-1 flex-col justify-between gap-12 px-2 py-6 sm:px-4 sm:py-14 md:gap-20">
