@@ -29,13 +29,18 @@ const pendingStates = new Map<string, string>();
 const SSO_COOKIE = "clura_sso_session";
 const SSO_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
+const IS_PROD = process.env.NODE_ENV === "production";
+const SSO_COOKIE_DOMAIN = process.env.SSO_COOKIE_DOMAIN;
+
+const SSO_COOKIE_OPTS = {
+  httpOnly: true,
+  sameSite: "lax" as const,
+  secure: IS_PROD,
+  ...(SSO_COOKIE_DOMAIN ? { domain: SSO_COOKIE_DOMAIN } : {}),
+};
+
 const setSSOCookie = (res: Response, raw: string) => {
-  res.cookie(SSO_COOKIE, raw, {
-    httpOnly: true,
-    sameSite: "lax",
-    maxAge: SSO_MAX_AGE,
-    secure: process.env.NODE_ENV === "production",
-  });
+  res.cookie(SSO_COOKIE, raw, { ...SSO_COOKIE_OPTS, maxAge: SSO_MAX_AGE });
 };
 
 const signToken = (payload: object, expiresIn: string) =>
@@ -412,11 +417,7 @@ export const globalLogout = async (req: Request, res: Response) => {
   if (rawToken) {
     await service.deleteSSOSession(rawToken);
   }
-  res.clearCookie(SSO_COOKIE, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  res.clearCookie(SSO_COOKIE, SSO_COOKIE_OPTS);
   res.json({ message: "Logged out" });
 };
 
@@ -425,11 +426,7 @@ export const globalLogoutRedirect = async (req: Request, res: Response) => {
   if (rawToken) {
     await service.deleteSSOSession(rawToken);
   }
-  res.clearCookie(SSO_COOKIE, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  res.clearCookie(SSO_COOKIE, SSO_COOKIE_OPTS);
   const next = req.query.next as string | undefined;
   const frontendUrl = FRONTEND_URL ?? "http://localhost:3000";
   res.redirect(next ?? frontendUrl);
