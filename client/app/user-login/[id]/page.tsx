@@ -20,9 +20,15 @@ const checkLoginStatus = async (appClientId: string): Promise<LoginStatus> => {
   const ssoCookie = cookieStore.get("clura_sso_session");
 
   try {
-    const res = await fetch(`${base}/v1/global-auth/check?appClientId=${appClientId}`, {
-      headers: ssoCookie ? { Cookie: `clura_sso_session=${ssoCookie.value}` } : {},
+    const res = await fetch(`${base}/v1/global-auth/check`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(ssoCookie ? { Cookie: `clura_sso_session=${ssoCookie.value}` } : {}),
+      },
+      body: JSON.stringify({ appClientId }),
       cache: "no-store",
+      credentials: "include",
     });
     if (!res.ok) return { status: "invalid" };
     return (await res.json()) as LoginStatus;

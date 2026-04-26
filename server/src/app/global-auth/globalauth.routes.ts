@@ -19,7 +19,10 @@ router.get("/github", globalGithubRedirect);
 router.get("/github/callback", globalGithubCallback);
 router.post("/refresh", globalRefreshTokens);
 router.post("/token", exchangeCode);
-router.get("/check", checkLoginStatus);
+router.post("/check", checkLoginStatus);
+router.all("/check", (_req, res) => {
+  res.set("Allow", "POST").status(405).json({ message: "Method not allowed" });
+});
 router.post("/logout", globalLogout);
 router.get("/logout", globalLogoutRedirect);
 

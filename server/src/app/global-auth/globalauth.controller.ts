@@ -361,7 +361,7 @@ export const globalRefreshTokens = async (req: Request, res: Response) => {
 };
 
 export const checkLoginStatus = async (req: Request, res: Response) => {
-  const { appClientId } = req.query as Record<string, string>;
+  const { appClientId } = req.body as { appClientId?: string };
 
   if (!appClientId) {
     res.json({ status: "invalid" });
