@@ -1,12 +1,11 @@
 
-# Clura
+# 🔐 Clura
 
-Clura is a self-hosted OAuth 2.0 / OpenID Connect identity provider. Developers register their applications on the Clura dashboard, then send their end-users to Clura's hosted login page. After the user authenticates, Clura issues a signed **ID token**, **access token**, and **refresh token** — all verifiable using Clura's public JWKS endpoint, with no SDK required.
+Clura is a self-hosted OAuth 2.0 / OpenID Connect identity provider. Developers register their applications on the Clura dashboard, then send their end-users to Clura's hosted login page. After the user authenticates via **Google**, **GitHub**, or **Email**, Clura issues signed **ID tokens**, **access tokens**, and **refresh tokens** (RS256) — all verifiable using Clura's public JWKS endpoint, with no proprietary SDK required.
 
-Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the keys, and the data.
+Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the RSA keys, and the data. No vendor lock-in, no subscriptions, and no black boxes.
 
 ---
-
 ## 🛠️ How it works
 
 1. Developer registers an app on the Clura dashboard
