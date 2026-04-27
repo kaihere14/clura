@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { IconKey, IconDatabase, IconServer2 } from "@tabler/icons-react";
+import {
+  IconKey,
+  IconDatabase,
+  IconServer2,
+  IconBrandGoogle,
+  IconBrandGithub,
+  IconMail,
+  IconCode,
+} from "@tabler/icons-react";
 
 const JwtPanel = () => {
   const [hovered, setHovered] = useState(false);
@@ -273,7 +281,131 @@ const TerminalPanel = () => {
   );
 };
 
-const ArchDiagram = () => (
+const SweepLine = ({
+  color,
+  strokeWidth = 4,
+  dur = "2s",
+  id,
+}: {
+  color: string;
+  strokeWidth?: number;
+  dur?: string;
+  id: string;
+}) => (
+  <>
+    <defs>
+      <linearGradient id={`pg-${id}`} x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%" stopColor={color} stopOpacity={0} />
+        <stop offset="50%" stopColor={color} stopOpacity={1} />
+        <stop offset="100%" stopColor={color} stopOpacity={0} />
+      </linearGradient>
+      <mask id={`lm-${id}`}>
+        <path d="M 0 20 L 400 20" stroke="white" strokeWidth={strokeWidth + 2} fill="none" />
+      </mask>
+    </defs>
+    <path d="M 0 20 L 400 20" stroke="#e5e5e5" strokeWidth={strokeWidth} fill="none" />
+    <rect x="-120" y="0" width="120" height="40" fill={`url(#pg-${id})`} mask={`url(#lm-${id})`}>
+      <animate attributeName="x" from="-120" to="400" dur={dur} repeatCount="indefinite" />
+    </rect>
+  </>
+);
+
+const ArchDiagramTwo = () => (
+  <div className="relative col-span-full hidden min-h-80 w-full overflow-hidden border-t-2 border-neutral-200 md:block dark:border-neutral-800">
+    {/* Your App */}
+    <div className="left-34 top-27 absolute flex flex-col items-center justify-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-4 py-3 text-center shadow-lg shadow-neutral-800/30">
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800">
+        <IconCode size={16} className="text-neutral-500 dark:text-neutral-400" />
+      </div>
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-200">Your App</div>
+      <div className="rounded-md bg-neutral-50 px-2 py-0.5 font-mono text-[9px] text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
+        client_id •••
+      </div>
+    </div>
+
+    {/* Clura IDP */}
+    <div className="left-136 top-29 absolute flex h-20 w-20 flex-col items-center justify-center rounded-xl border border-violet-500/40 bg-white shadow-lg shadow-violet-500/30">
+      <img src="/clura.png" alt="Clura" className="mb-0.5 h-7 w-7 object-contain" />
+      <span className="text-xs font-bold text-neutral-800">Clura</span>
+      <span className="text-[10px] text-violet-500">IDP</span>
+    </div>
+
+    {/* Google */}
+    <div className="right-50 absolute top-1 flex flex-col items-center justify-center rounded-xl border-2 border-[#fd9393ff]/40 bg-white px-5 py-3 text-center shadow-lg shadow-[#fd9393ff]/30">
+      <IconBrandGoogle size={18} className="mb-1 text-red-400" />
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-200">Google</div>
+      <div className="text-[10px] text-neutral-400">OAuth 2.0</div>
+    </div>
+
+    {/* GitHub */}
+    <div className="right-50 top-30 absolute flex flex-col items-center justify-center rounded-xl border-2 border-[#fcd34d]/40 bg-white px-5 py-3 text-center shadow-lg shadow-[#fcd34d]/30">
+      <IconBrandGithub size={18} className="mb-1 text-neutral-700 dark:text-neutral-200" />
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-200">GitHub</div>
+      <div className="text-[10px] text-neutral-400">OAuth 2.0</div>
+    </div>
+
+    {/* Email */}
+    <div className="right-50 absolute bottom-1 flex flex-col items-center justify-center rounded-xl border-2 border-[#00d5ff]/40 bg-white px-4 py-3 text-center shadow-lg shadow-[#00d5ff]/30">
+      <IconMail size={18} className="mb-1 text-blue-400" />
+      <div className="text-xs font-semibold text-neutral-700 dark:text-neutral-200">Email</div>
+      <div className="text-[10px] text-neutral-400">+ password</div>
+    </div>
+
+    {/* Your App → Clura */}
+    <svg
+      viewBox="0 0 400 40"
+      className="w-88 -z-99 left-49 top-35 absolute"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#cd66fdff" id="line-app" dur="1.9s" />
+    </svg>
+
+    {/* Clura → GitHub */}
+    <svg
+      viewBox="0 0 400 40"
+      className="w-76 -z-99 right-69 absolute top-36"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#fcd34d" id="line-gh" dur="2s" />
+    </svg>
+
+    {/* Clura → Google */}
+    <svg
+      viewBox="0 0 400 40"
+      className="w-84 -z-99 right-68 absolute top-5"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#fd9393ff" id="line-goog" dur="2s" />
+    </svg>
+
+    {/* Clura → Email */}
+    <svg
+      viewBox="0 0 400 40"
+      className="w-84 -z-99 right-68 absolute bottom-5"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#00d5ff" id="line-email" dur="2s" />
+    </svg>
+
+    {/* vertical spine */}
+    <svg
+      viewBox="0 0 400 40"
+      className="w-45 -z-99 right-130 top-46 absolute rotate-[90deg]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#86efac" strokeWidth={7} id="line-v1" dur="" />
+    </svg>
+    <svg
+      viewBox="0 0 400 40"
+      className="w-45 -z-99 right-130 top-29 absolute rotate-[90deg]"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <SweepLine color="#86efac" strokeWidth={7} id="line-v2" dur="" />
+    </svg>
+  </div>
+);
+
+const _ArchDiagram = () => (
   <div className="relative col-span-full hidden w-full overflow-hidden border-t-2 border-neutral-200 md:block dark:border-neutral-800">
     <div className="absolute inset-0 bg-[repeating-linear-gradient(315deg,var(--tw-color,#d4d4d4)_0%,var(--tw-color,#d4d4d4)_1px,transparent_1px,transparent_50%)] bg-[size:10px_10px] opacity-30 dark:opacity-10" />
     <svg
@@ -512,7 +644,8 @@ const Features = () => {
         <JwtPanel />
         <FlowPanel />
         <TerminalPanel />
-        <ArchDiagram />
+        {/* <ArchDiagram /> */}
+        <ArchDiagramTwo />
       </div>
     </div>
   );
