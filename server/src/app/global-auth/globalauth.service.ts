@@ -61,6 +61,16 @@ export const upsertUserByGithub = async (profile: GithubProfile) => {
   return user;
 };
 
+export const getUserByEmail = async (email: string) => {
+  const [user] = await db.select().from(userTable).where(eq(userTable.email, email)).limit(1);
+  return user ?? null;
+};
+
+export const createUserWithPassword = async (email: string, name: string, passwordHash: string) => {
+  const [user] = await db.insert(userTable).values({ email, name, passwordHash }).returning();
+  return user!;
+};
+
 export const getAppByClientId = async (appClientId: string) => {
   const [app] = await db
     .select()

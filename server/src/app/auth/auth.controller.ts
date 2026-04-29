@@ -2,7 +2,13 @@ import type { Request, Response } from "express";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import type { AuthRequest } from "./auth.middleware";
-import { upsertClient, upsertClientByGithub, getClientById } from "./auth.service";
+import {
+  upsertClient,
+  upsertClientByGithub,
+  getClientById,
+  getClientByEmail,
+  createClientWithPassword,
+} from "./auth.service";
 
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -228,6 +234,69 @@ export const githubIdCallback = async (req: Request, res: Response) => {
   });
 
   res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+};
+
+export const registerWithPassword = async (req: Request, res: Response) => {
+  const { email, password, name } = req.body as {
+    email?: string;
+    password?: string;
+    name?: string;
+  };
+
+  if (!email || !password || !name) {
+    res.status(400).json({ message: "email, password and name are required" });
+    return;
+  }
+  if (!email.includes("@")) {
+    res.status(400).json({ message: "Invalid email" });
+    return;
+  }
+  if (password.length < 8) {
+    res.status(400).json({ message: "Password must be at least 8 characters" });
+    return;
+  }
+
+  const existing = await getClientByEmail(email);
+  if (existing) {
+    res.status(409).json({ message: "Email already registered" });
+    return;
+  }
+
+  const passwordHash = await Bun.password.hash(password);
+  const client = await createClientWithPassword(email, name, passwordHash);
+
+  const token = jwt.sign({ clientId: client.id, email: client.email }, JWT_SECRET!, {
+    expiresIn: "7d",
+  });
+
+  res.json({ token });
+};
+
+export const loginWithPassword = async (req: Request, res: Response) => {
+  const { email, password } = req.body as { email?: string; password?: string };
+
+  if (!email || !password) {
+    res.status(400).json({ message: "email and password are required" });
+    return;
+  }
+
+  const client = await getClientByEmail(email);
+  if (!client || !client.passwordHash) {
+    res.status(401).json({ message: "Invalid credentials" });
+    return;
+  }
+
+  const valid = await Bun.password.verify(password, client.passwordHash);
+  if (!valid) {
+    res.status(401).json({ message: "Invalid credentials" });
+    return;
+  }
+
+  const token = jwt.sign({ clientId: client.id, email: client.email }, JWT_SECRET!, {
+    expiresIn: "7d",
+  });
+
+  res.json({ token });
 };
 
 export const getMe = async (req: AuthRequest, res: Response) => {

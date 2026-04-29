@@ -71,6 +71,13 @@
       "when": 1777183018507,
       "tag": "0009_tense_whiplash",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1777424350543,
+      "tag": "0010_modern_puff_adder",
+      "breakpoints": true
     }
   ]
 }

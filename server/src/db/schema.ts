@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
+import { pgTable, varchar, text, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const clientTable = pgTable("client_table", {
@@ -8,6 +8,7 @@ export const clientTable = pgTable("client_table", {
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   avatar: varchar({ length: 500 }),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -30,6 +31,7 @@ export const userTable = pgTable("user_table", {
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   avatar: varchar({ length: 500 }),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

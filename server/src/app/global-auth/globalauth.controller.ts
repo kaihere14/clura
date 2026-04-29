@@ -432,6 +432,108 @@ export const globalLogoutRedirect = async (req: Request, res: Response) => {
   res.redirect(next ?? frontendUrl);
 };
 
+export const globalRegisterWithPassword = async (req: Request, res: Response) => {
+  const { email, password, name, appClientId } = req.body as {
+    email?: string;
+    password?: string;
+    name?: string;
+    appClientId?: string;
+  };
+
+  if (!email || !password || !name || !appClientId) {
+    res.status(400).json({ message: "email, password, name and appClientId are required" });
+    return;
+  }
+  if (!email.includes("@")) {
+    res.status(400).json({ message: "Invalid email" });
+    return;
+  }
+  if (password.length < 8) {
+    res.status(400).json({ message: "Password must be at least 8 characters" });
+    return;
+  }
+
+  const app = await service.getAppByClientId(appClientId);
+  if (!app) {
+    res.status(404).json({ message: "App not found" });
+    return;
+  }
+
+  const existing = await service.getUserByEmail(email);
+  if (existing) {
+    res.status(409).json({ message: "Email already registered" });
+    return;
+  }
+
+  const passwordHash = await Bun.password.hash(password);
+  const user = await service.createUserWithPassword(email, name, passwordHash);
+
+  const { session, rawToken } = await service.createSession(user.id, appClientId);
+  const { idToken, accessToken } = buildTokens(user.id, appClientId, session!.id, user);
+  const authCode = await service.createAuthCode({
+    appClientId,
+    idToken,
+    accessToken,
+    refreshToken: rawToken,
+  });
+
+  const rawSSOToken = await service.createSSOSession(user.id);
+  setSSOCookie(res, rawSSOToken);
+
+  const redirectUrl = new URL(app.redirectUri);
+  redirectUrl.searchParams.set("code", authCode.code);
+
+  res.json({ redirectUrl: redirectUrl.toString() });
+};
+
+export const globalLoginWithPassword = async (req: Request, res: Response) => {
+  const { email, password, appClientId } = req.body as {
+    email?: string;
+    password?: string;
+    appClientId?: string;
+  };
+
+  if (!email || !password || !appClientId) {
+    res.status(400).json({ message: "email, password and appClientId are required" });
+    return;
+  }
+
+  const app = await service.getAppByClientId(appClientId);
+  if (!app) {
+    res.status(404).json({ message: "App not found" });
+    return;
+  }
+
+  const user = await service.getUserByEmail(email);
+  if (!user || !user.passwordHash) {
+    res.status(401).json({ message: "Invalid credentials" });
+    return;
+  }
+
+  const valid = await Bun.password.verify(password, user.passwordHash);
+  if (!valid) {
+    res.status(401).json({ message: "Invalid credentials" });
+    return;
+  }
+
+  const { session, rawToken } = await service.createSession(user.id, appClientId);
+  const { idToken, accessToken } = buildTokens(user.id, appClientId, session!.id, user);
+  const authCode = await service.createAuthCode({
+    appClientId,
+    idToken,
+    accessToken,
+    refreshToken: rawToken,
+  });
+
+  const rawSSOToken = await service.createSSOSession(user.id);
+  setSSOCookie(res, rawSSOToken);
+
+  const redirectUrl = new URL(app.redirectUri);
+  redirectUrl.searchParams.set("code", authCode.code);
+
+  res.json({ redirectUrl: redirectUrl.toString() });
+};
+
 export const exchangeCode = async (req: Request, res: Response) => {
   const { code, app_secret } = req.body as { code?: string; app_secret?: string };
 

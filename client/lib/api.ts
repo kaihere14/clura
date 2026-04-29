@@ -42,3 +42,15 @@ export const updateApp = (token: string, id: string, name: string, redirectUri?:
 
 export const deleteApp = (token: string, id: string) =>
   apiFetch<void>(`/v1/app/${id}`, token, { method: "DELETE" });
+
+export const loginWithEmail = (email: string, password: string) =>
+  apiFetch<{ token: string }>("/v1/auth/login", null, {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+
+export const registerWithEmail = (email: string, password: string, name: string) =>
+  apiFetch<{ token: string }>("/v1/auth/register", null, {
+    method: "POST",
+    body: JSON.stringify({ email, password, name }),
+  });

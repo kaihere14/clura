@@ -9,6 +9,8 @@ import {
   globalLogoutRedirect,
   checkLoginStatus,
   exchangeCode,
+  globalRegisterWithPassword,
+  globalLoginWithPassword,
 } from "./globalauth.controller";
 
 const router = Router();
@@ -17,6 +19,8 @@ router.get("/google", globalOpenIdRedirect);
 router.get("/callback", globalOpenIdCallback);
 router.get("/github", globalGithubRedirect);
 router.get("/github/callback", globalGithubCallback);
+router.post("/register", globalRegisterWithPassword);
+router.post("/login", globalLoginWithPassword);
 router.post("/refresh", globalRefreshTokens);
 router.post("/token", exchangeCode);
 router.post("/check", checkLoginStatus);

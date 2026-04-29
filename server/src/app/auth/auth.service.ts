@@ -45,6 +45,20 @@ export const upsertClient = async (profile: GoogleProfile) => {
   return client;
 };
 
+export const getClientByEmail = async (email: string) => {
+  const [client] = await db.select().from(clientTable).where(eq(clientTable.email, email)).limit(1);
+  return client ?? null;
+};
+
+export const createClientWithPassword = async (
+  email: string,
+  name: string,
+  passwordHash: string,
+) => {
+  const [client] = await db.insert(clientTable).values({ email, name, passwordHash }).returning();
+  return client!;
+};
+
 export const upsertClientByGithub = async (profile: GithubProfile) => {
   const existing = await db
     .select()

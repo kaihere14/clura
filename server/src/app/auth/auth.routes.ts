@@ -10,6 +10,9 @@ router.get("/google/callback", auth.googleIdCallback);
 router.get("/github", auth.githubIdRedirect);
 router.get("/github/callback", auth.githubIdCallback);
 
+router.post("/register", auth.registerWithPassword);
+router.post("/login", auth.loginWithPassword);
+
 router.get("/me", requireAuth, auth.getMe);
 
 export default router;

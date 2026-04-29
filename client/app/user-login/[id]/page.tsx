@@ -52,7 +52,7 @@ const Page = async ({ params }: PageProps) => {
           <div className="h-120 flex w-fit flex-col items-center justify-center">
             <LoginHeader />
             <SocialLogins appClientId={id} />
-            <EmailLoginForm />
+            <EmailLoginForm appClientId={id} />
           </div>
         </div>
       ) : (

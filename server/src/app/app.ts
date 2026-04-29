@@ -11,7 +11,12 @@ import { getOpenIdConfiguration } from "./well-known/openid-configuration.contro
 
 export const getApp = (): Application => {
   const app = expres();
-  app.use(cors());
+  app.use(
+    cors({
+      origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+      credentials: true,
+    }),
+  );
   app.use(expres.json());
   app.use(cookieParser());
 
