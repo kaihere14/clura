@@ -15,7 +15,7 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the RSA
          ↓
 3. Clura checks for an existing SSO session (via secure cookie)
          ↓
-4. User authenticates with Google or GitHub (if no active session)
+4. User authenticates with Google, GitHub, or Email/Password (if no active session)
          ↓
 5. Clura issues a short-lived **authorization code** (valid for 2 minutes) and sets an SSO cookie
          ↓
@@ -28,7 +28,7 @@ Think of it as a self-hosted Clerk or Auth0: you own the infrastructure, the RSA
 
 ### Step 1 — Sign in to the Clura dashboard
 
-Visit the Clura dashboard and sign in with Google or GitHub. This creates your developer account.
+Visit the Clura dashboard and sign in with Google, GitHub, or your Email. This creates your developer account.
 
 ### Step 2 — Create an application
 
@@ -553,15 +553,16 @@ clura/
 
 ### `client_table` — Developer accounts
 
-| Column       | Type      | Description           |
-| ------------ | --------- | --------------------- |
-| `id`         | uuid PK   | Developer ID          |
-| `google_id`  | varchar   | Google OAuth sub (opt)|
-| `github_id`  | varchar   | GitHub OAuth ID (opt) |
-| `name`       | varchar   | Display name          |
-| `email`      | varchar   | Email address         |
-| `avatar`     | varchar   | Profile picture URL   |
-| `created_at` | timestamp | Account creation time |
+| Column          | Type      | Description           |
+| --------------- | --------- | --------------------- |
+| `id`            | uuid PK   | Developer ID          |
+| `google_id`     | varchar   | Google OAuth sub (opt)|
+| `github_id`     | varchar   | GitHub OAuth ID (opt) |
+| `name`          | varchar   | Display name          |
+| `email`         | varchar   | Email address         |
+| `avatar`        | varchar   | Profile picture URL   |
+| `password_hash` | text      | Hashed password (opt) |
+| `created_at`    | timestamp | Account creation time |
 
 ### `app_table` — Registered applications
 
@@ -577,15 +578,16 @@ clura/
 
 ### `user_table` — End-users
 
-| Column       | Type      | Description                             |
-| ------------ | --------- | --------------------------------------- |
-| `id`         | uuid PK   | User ID — the `sub` claim in all tokens |
-| `google_id`  | varchar   | Google OAuth sub (opt)                  |
-| `github_id`  | varchar   | GitHub OAuth ID (opt)                   |
-| `name`       | varchar   | Display name                            |
-| `email`      | varchar   | Email address                           |
-| `avatar`     | varchar   | Profile picture URL                     |
-| `created_at` | timestamp | First login time                        |
+| Column          | Type      | Description                             |
+| --------------- | --------- | --------------------------------------- |
+| `id`            | uuid PK   | User ID — the `sub` claim in all tokens |
+| `google_id`     | varchar   | Google OAuth sub (opt)                  |
+| `github_id`     | varchar   | GitHub OAuth ID (opt)                   |
+| `name`          | varchar   | Display name                            |
+| `email`         | varchar   | Email address                           |
+| `avatar`        | varchar   | Profile picture URL                     |
+| `password_hash` | text      | Hashed password (opt)                   |
+| `created_at`    | timestamp | First login time                        |
 
 ### `session_table` — Active sessions
 
